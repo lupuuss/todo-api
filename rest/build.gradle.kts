@@ -36,6 +36,10 @@ dependencies {
     implementation("org.kodein.di:kodein-di-framework-ktor-server-jvm:$vKodein")
     implementation("org.kodein.di:kodein-di-framework-ktor-server-controller-jvm:$vKodein")
 
+    // mongo
+
+    implementation("org.litote.kmongo:kmongo:4.2.4")
+
     testImplementation(kotlin("test-junit"))
 }
 

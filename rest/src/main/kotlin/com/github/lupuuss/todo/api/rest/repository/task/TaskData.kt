@@ -1,7 +1,7 @@
 package com.github.lupuuss.todo.api.rest.repository.task
 
 data class TaskData(
-    val id: String,
+    val id: String? = null,
     val date: String,
     val userId: String,
     val name: String,

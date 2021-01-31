@@ -2,9 +2,9 @@ package com.github.lupuuss.todo.api.rest.repository.user
 
 interface UserRepository {
 
-    fun findAll(): List<UserData>
+    fun findAll(skip: Int? = null, limit: Int? = null): List<UserData>
 
-    fun findUserByLoginContains(query: String): List<UserData>
+    fun findUserByLoginContains(query: String, skip: Int? = null, limit: Int? = null): List<UserData>
 
     fun findUserByLogin(login: String): UserData?
 
@@ -12,5 +12,5 @@ interface UserRepository {
 
     fun saveUser(user: UserData)
 
-    fun deleteUser(id: String)
+    fun deleteUser(id: String): Long
 }
