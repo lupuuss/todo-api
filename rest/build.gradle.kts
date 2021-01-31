@@ -20,10 +20,16 @@ val vKodein = "7.2.0"
 dependencies {
     implementation(project(":core"))
 
+    // utils
+
+    implementation("org.mindrot:jbcrypt:0.4")
+
     // Ktor
 
     implementation("io.ktor:ktor-server-netty:$vKtor")
     implementation("io.ktor:ktor-html-builder:$vKtor")
+    implementation("io.ktor:ktor-auth:$vKtor")
+    implementation("io.ktor:ktor-auth-jwt:$vKtor")
 
     // Kodein
 
@@ -42,5 +48,5 @@ tasks.withType<KotlinCompile>() {
 }
 
 application {
-    mainClassName = "ServerKt"
+    mainClass.set("com.github.lupuuss.todo.api.rest.ServerKt")
 }
