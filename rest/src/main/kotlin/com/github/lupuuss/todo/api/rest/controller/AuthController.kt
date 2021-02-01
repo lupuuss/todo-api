@@ -1,7 +1,9 @@
 package com.github.lupuuss.todo.api.rest.controller
 
+import com.github.lupuuss.todo.api.core.AuthOk
 import com.github.lupuuss.todo.api.core.Credentials
 import com.github.lupuuss.todo.api.rest.auth.AuthManager
+import com.github.lupuuss.todo.api.rest.auth.JWTConfig
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -22,7 +24,9 @@ class AuthController(application: Application) : AbstractDIController(applicatio
 
             val user = authManager.login(credential) ?: return@post call.respond(HttpStatusCode.Unauthorized)
 
-            call.respond(user)
+            val token = JWTConfig.makeToken(user) ?: return@post call.respond(HttpStatusCode.Unauthorized)
+
+            call.respond(token)
         }
 
     }
