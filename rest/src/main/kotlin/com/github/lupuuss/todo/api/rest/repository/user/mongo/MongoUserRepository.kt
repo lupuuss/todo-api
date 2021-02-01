@@ -26,6 +26,8 @@ class MongoUserRepository(driver: MongoClient, database: String) : UserRepositor
             .toList()
     }
 
+    override fun findUserByEmail(email: String): UserData? = collection.findOne(UserData::email eq email)
+
     override fun findUserByLogin(login: String): UserData? = collection.findOne(UserData::login eq login)
 
     override fun findUserById(id: String): UserData? = collection.findOneById(id)

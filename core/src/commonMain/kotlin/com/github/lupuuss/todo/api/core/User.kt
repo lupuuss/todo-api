@@ -3,6 +3,7 @@ package com.github.lupuuss.todo.api.core
 data class User(
     val id: String,
     val login: String,
+    val email: String,
     val active: Boolean,
     val role: Role,
 ) {
