@@ -16,18 +16,21 @@ repositories {
 
 val vKtor = "1.5.1"
 val vKodein = "7.2.0"
-
+val vSlf4j = "1.7.25"
 dependencies {
     implementation(project(":core"))
 
     // utils
+
+    implementation("org.slf4j:slf4j-simple:$vSlf4j")
+    implementation("org.slf4j:slf4j-api:$vSlf4j")
 
     implementation("org.mindrot:jbcrypt:0.4")
 
     // Ktor
 
     implementation("io.ktor:ktor-server-netty:$vKtor")
-    implementation("io.ktor:ktor-html-builder:$vKtor")
+    implementation("io.ktor:ktor-gson:$vKtor")
     implementation("io.ktor:ktor-auth:$vKtor")
     implementation("io.ktor:ktor-auth-jwt:$vKtor")
 

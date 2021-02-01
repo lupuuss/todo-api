@@ -4,7 +4,7 @@ import com.github.lupuuss.todo.api.core.User
 import com.github.lupuuss.todo.api.rest.repository.user.UserData
 
 fun UserData.mapToDomain() = User(
-    id!!,
+    _id!!,
     login,
     email,
     active,

@@ -4,15 +4,15 @@ import io.ktor.config.*
 
 class Config private constructor(config: ApplicationConfig) {
 
-    val jwtRealm= config.property("jwt.realm").toString()
+    val jwtRealm= config.property("jwt.realm").getString()
 
     val jwtIssuer =  config.property("jwt.issuer").getString()
 
-    val jwtSecret = config.property("jwt.secret").toString()
+    val jwtSecret = config.property("jwt.secret").getString()
 
-    val mongoConnectStr = config.property("mongo.connectStr").toString()
+    val mongoConnectStr = config.property("mongo.connectStr").getString()
 
-    val mongoDbName = config.property("mongo.databaseName").toString()
+    val mongoDbName = config.property("mongo.databaseName").getString()
 
     companion object {
 

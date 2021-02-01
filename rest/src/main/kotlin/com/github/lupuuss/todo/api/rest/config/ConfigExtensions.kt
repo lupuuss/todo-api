@@ -15,7 +15,7 @@ import org.kodein.di.*
 import org.kodein.di.ktor.di
 import org.litote.kmongo.KMongo
 
-fun Application.authConfig() {
+fun Application.configAuth() {
 
     val config = Config.get()
 
