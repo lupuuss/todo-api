@@ -5,6 +5,10 @@ plugins {
 group = "com.github.lupuuss.todo"
 version = "1.0-SNAPSHOT"
 
+repositories {
+    maven(url = "https://kotlin.bintray.com/kotlinx/")
+}
+
 kotlin {
 
     jvm()

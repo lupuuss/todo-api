@@ -7,6 +7,10 @@ import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
 import com.github.lupuuss.todo.api.rest.repository.task.mongo.MongoTaskRepository
 import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
 import com.github.lupuuss.todo.api.rest.repository.user.mongo.MongoUserRepository
+import com.github.lupuuss.todo.api.rest.services.TaskService
+import com.github.lupuuss.todo.api.rest.services.UserService
+import com.github.lupuuss.todo.api.rest.utils.date.CommonDateProvider
+import com.github.lupuuss.todo.api.rest.utils.date.DateProvider
 import com.mongodb.client.MongoClient
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -43,6 +47,11 @@ fun Application.configKodein() {
         bind<MongoClient>() with singleton { KMongo.createClient(config.mongoConnectStr) }
         bind<UserRepository>() with singleton { MongoUserRepository(instance(), databaseName) }
         bind<TaskRepository>() with singleton { MongoTaskRepository(instance(), databaseName) }
+
+        bind<DateProvider>() with singleton { CommonDateProvider() }
+
+        bind<UserService>() with singleton { UserService(instance()) }
+        bind<TaskService>() with singleton { TaskService(instance(), instance(), instance()) }
 
         bind<AuthManager>() with provider { AuthManager(BCryptHashProvider(), instance()) }
     }

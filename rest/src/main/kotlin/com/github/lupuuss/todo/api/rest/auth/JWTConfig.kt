@@ -2,13 +2,10 @@ package com.github.lupuuss.todo.api.rest.auth
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
-import com.github.lupuuss.todo.api.core.User
-import io.ktor.util.date.*
+import com.github.lupuuss.todo.api.core.user.User
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalUnit
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 object JWTConfig {
 

@@ -1,4 +1,4 @@
-package com.github.lupuuss.todo.api.core
+package com.github.lupuuss.todo.api.core.user
 
 data class User(
     val id: String,

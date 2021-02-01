@@ -1,8 +1,8 @@
-package com.github.lupuuss.todo.api.core
+package com.github.lupuuss.todo.api.core.task
 
 data class Task(
     val id: String,
-    val date: String,
+    val timestamp: Long,
     val userId: String,
     val name: String,
     val description: String,

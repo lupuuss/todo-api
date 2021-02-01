@@ -1,6 +1,6 @@
 package com.github.lupuuss.todo.api.rest.auth
 
-import com.github.lupuuss.todo.api.core.User
+import com.github.lupuuss.todo.api.core.user.User
 import io.ktor.auth.*
 
 class UserPrincipal(private val user: User): Principal {

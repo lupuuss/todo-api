@@ -1,7 +1,6 @@
 package com.github.lupuuss.todo.api.rest.controller
 
-import com.github.lupuuss.todo.api.core.AuthOk
-import com.github.lupuuss.todo.api.core.Credentials
+import com.github.lupuuss.todo.api.core.user.Credentials
 import com.github.lupuuss.todo.api.rest.auth.AuthManager
 import com.github.lupuuss.todo.api.rest.auth.JWTConfig
 import io.ktor.application.*

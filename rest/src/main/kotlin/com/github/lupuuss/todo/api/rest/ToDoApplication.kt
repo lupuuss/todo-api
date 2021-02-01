@@ -1,12 +1,18 @@
 package com.github.lupuuss.todo.api.rest
 
+import com.github.lupuuss.todo.api.rest.auth.UserPrincipal
 import com.github.lupuuss.todo.api.rest.config.Config
 import com.github.lupuuss.todo.api.rest.config.configAuth
 import com.github.lupuuss.todo.api.rest.config.configKodein
 import com.github.lupuuss.todo.api.rest.controller.AuthController
+import com.github.lupuuss.todo.api.rest.controller.MeController
+import com.github.lupuuss.todo.api.rest.controller.exception.BadParamsException
+import com.github.lupuuss.todo.api.rest.services.exception.ItemNotFoundException
 import io.ktor.application.*
+import io.ktor.auth.*
 import io.ktor.features.*
 import io.ktor.gson.*
+import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import org.kodein.di.instance
@@ -23,8 +29,22 @@ fun Application.main() {
         configKodein()
         configAuth()
 
+        install(StatusPages) {
+            exception<ItemNotFoundException> { _ ->
+                call.respond(HttpStatusCode.NotFound)
+            }
+
+            exception<BadParamsException> {
+                call.respond(HttpStatusCode.BadRequest)
+            }
+        }
+
         get("/") { call.respond("TO-DO List API!") }
 
         controller("/auth") { AuthController(instance()) }
+
+        authenticate {
+            controller("/me") {  MeController(instance()) }
+        }
     }
 }

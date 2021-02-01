@@ -6,17 +6,18 @@ import com.github.lupuuss.todo.api.rest.utils.mongo.applyLimitsOptionally
 import com.mongodb.client.MongoClient
 import org.litote.kmongo.*
 
+
 class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskRepository {
     private val collection = driver
         .getDatabase(databaseName)
-        .getCollection<TaskData>("task")
+        .getCollection<TaskData>()
 
     override fun findTasksByUser(
         userId: String, skip: Int?, limit: Int?
     ): List<TaskData> {
         return collection
             .find(TaskData::userId eq userId)
-            .sort(descending(TaskData::date))
+            .sort(descending(TaskData::timestamp))
             .applyLimitsOptionally(skip, limit)
             .toList()
     }
