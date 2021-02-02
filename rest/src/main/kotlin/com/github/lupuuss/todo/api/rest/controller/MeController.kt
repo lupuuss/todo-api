@@ -1,8 +1,11 @@
 package com.github.lupuuss.todo.api.rest.controller
 
+import com.github.lupuuss.todo.api.core.OperationResult
 import com.github.lupuuss.todo.api.core.task.NewTask
+import com.github.lupuuss.todo.api.core.task.PatchTask
 import com.github.lupuuss.todo.api.core.user.User
 import com.github.lupuuss.todo.api.rest.auth.UserPrincipal
+import com.github.lupuuss.todo.api.rest.controller.exception.BadParamsException
 import com.github.lupuuss.todo.api.rest.services.TaskService
 import com.github.lupuuss.todo.api.rest.services.UserService
 import io.ktor.application.*
@@ -42,9 +45,53 @@ class MeController(application: Application) : AbstractDIController(application)
             val newTask = call.receive<NewTask>()
             val principal = call.principal<UserPrincipal>()!!
 
-            taskService.createNewTaskForUser(principal.login, newTask)
+            val task = taskService.createNewTaskForUser(principal.login, newTask)
 
-            call.respond(HttpStatusCode.OK)
+            call.respond(task)
         }
+
+        patch ("/task/{id}") {
+            val patch = PatchTask(call.receive()).validated()
+
+            val principal = call.principal<UserPrincipal>()!!
+            val id = call.parameters["id"] ?: throw BadParamsException("Id is required!")
+
+            if (!taskService.checkTaskBelongToUser(id, principal.login)) {
+
+                call.respond(HttpStatusCode.Unauthorized)
+                return@patch
+            }
+
+            taskService.patchTask(id, patch)
+            call.respond(HttpStatusCode.NoContent)
+        }
+
+        delete ("/task/{id}") {
+            val id = call.parameters["id"] ?: throw BadParamsException("Id is required!")
+            val principal = call.principal<UserPrincipal>()!!
+
+            if (!taskService.checkTaskBelongToUser(id, principal.login)) {
+                call.respond(HttpStatusCode.Unauthorized)
+                return@delete
+            }
+
+            val count = taskService.deleteTask(id)
+            call.respond(OperationResult(count, OperationResult.Type.DELETE))
+        }
+    }
+
+    private fun PatchTask.validated(): PatchTask {
+
+        if (explicitSetName() && name.isNullOrBlank()) throw BadParamsException("Name cannot be set to null!")
+
+        try {
+            status
+        } catch (e: Exception) {
+            throw BadParamsException("Bad enum constant!")
+        }
+
+        if (explicitSetStatus() && status == null) throw BadParamsException("Status cannot be set to null!")
+
+        return this
     }
 }

@@ -1,6 +1,6 @@
 package com.github.lupuuss.todo.api.rest
 
-import com.github.lupuuss.todo.api.rest.auth.UserPrincipal
+import com.github.lupuuss.todo.api.core.Message
 import com.github.lupuuss.todo.api.rest.config.Config
 import com.github.lupuuss.todo.api.rest.config.configAuth
 import com.github.lupuuss.todo.api.rest.config.configKodein
@@ -30,12 +30,12 @@ fun Application.main() {
         configAuth()
 
         install(StatusPages) {
-            exception<ItemNotFoundException> { _ ->
-                call.respond(HttpStatusCode.NotFound)
+            exception<ItemNotFoundException> { cause ->
+                call.respond(HttpStatusCode.NotFound, Message(cause.message ?: ""))
             }
 
-            exception<BadParamsException> {
-                call.respond(HttpStatusCode.BadRequest)
+            exception<BadParamsException> { cause ->
+                call.respond(HttpStatusCode.BadRequest, Message(cause.message ?: ""))
             }
         }
 

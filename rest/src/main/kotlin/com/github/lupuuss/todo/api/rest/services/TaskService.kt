@@ -2,6 +2,7 @@ package com.github.lupuuss.todo.api.rest.services
 
 import com.github.lupuuss.todo.api.core.Page
 import com.github.lupuuss.todo.api.core.task.NewTask
+import com.github.lupuuss.todo.api.core.task.PatchTask
 import com.github.lupuuss.todo.api.core.task.Task
 import com.github.lupuuss.todo.api.rest.repository.task.TaskData
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
@@ -43,7 +44,7 @@ class TaskService(
         }
     }
 
-    fun createNewTaskForUser(login: String, newTask: NewTask) {
+    fun createNewTaskForUser(login: String, newTask: NewTask): TaskData {
 
         val user = getUser(login)
 
@@ -55,6 +56,37 @@ class TaskService(
             newTask.status.mapFromDomain(),
         )
 
-        taskRepository.saveTask(data)
+        val id = taskRepository.insertTask(data)!!
+
+        return taskRepository.findTaskById(id)!!
     }
+
+    fun patchTask(id: String, patch: PatchTask) {
+
+        val task = taskRepository.findTaskById(id) ?: throw ItemNotFoundException("id", id)
+
+        if (patch.explicitSetStatus()) {
+            task.status = patch.status?.mapFromDomain()!!
+        }
+
+        if (patch.explicitSetName()) {
+            task.name = patch.name!!
+        }
+
+        if (patch.explicitSetDescription()) {
+            task.description = patch.description
+        }
+
+        taskRepository.replaceTask(task)
+    }
+
+    fun checkTaskBelongToUser(id: String, login: String): Boolean {
+
+        val user = userRepository.findUserByLogin(login) ?: return false
+        val task = taskRepository.findTaskById(id) ?: throw ItemNotFoundException("id", id)
+
+        return user._id!! == task.userId
+    }
+
+    fun deleteTask(id: String): Long = taskRepository.deleteTask(id)
 }

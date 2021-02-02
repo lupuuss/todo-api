@@ -5,7 +5,7 @@ data class Task(
     val timestamp: Long,
     val userId: String,
     val name: String,
-    val description: String,
+    val description: String?,
     val status: Status = Status.NOT_STARTED,
 ) {
     enum class Status {

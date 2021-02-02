@@ -12,6 +12,10 @@ class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskReposi
         .getDatabase(databaseName)
         .getCollection<TaskData>()
 
+    override fun findTaskById(id: String): TaskData? {
+        return collection.findOneById(id)
+    }
+
     override fun findTasksByUser(
         userId: String, skip: Int?, limit: Int?
     ): List<TaskData> {
@@ -32,7 +36,13 @@ class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskReposi
             .toList()
     }
 
-    override fun saveTask(task: TaskData) = collection.save(task)
+    override fun replaceTask(task: TaskData) {
+        collection.replaceOne(task)
+    }
+
+    override fun insertTask(task: TaskData): String? {
+        return collection.insertOne(task).insertedId?.asString()?.value
+    }
 
     override fun deleteTask(id: String): Long = collection.deleteOneById(id).deletedCount
 
