@@ -4,13 +4,14 @@ import com.github.lupuuss.todo.api.rest.repository.task.TaskData
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
 import com.github.lupuuss.todo.api.rest.utils.mongo.applyLimitsOptionally
 import com.mongodb.client.MongoClient
+import org.bson.types.ObjectId
 import org.litote.kmongo.*
 
 
 class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskRepository {
     private val collection = driver
         .getDatabase(databaseName)
-        .getCollection<TaskData>()
+        .getCollection<TaskData>("task")
 
     override fun findTaskById(id: String): TaskData? {
         return collection.findOneById(id)
@@ -40,8 +41,14 @@ class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskReposi
         collection.replaceOne(task)
     }
 
-    override fun insertTask(task: TaskData): String? {
-        return collection.insertOne(task).insertedId?.asString()?.value
+    override fun insertTask(task: TaskData): String {
+
+        val id = ObjectId.get().toHexString()
+        task._id = id
+
+        collection.insertOne(task)
+
+        return id
     }
 
     override fun deleteTask(id: String): Long = collection.deleteOneById(id).deletedCount

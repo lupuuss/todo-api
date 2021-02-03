@@ -15,7 +15,7 @@ interface TaskRepository {
 
     fun replaceTask(task: TaskData)
 
-    fun insertTask(task: TaskData): String?
+    fun insertTask(task: TaskData): String
 
     fun deleteTask(id: String): Long
 }

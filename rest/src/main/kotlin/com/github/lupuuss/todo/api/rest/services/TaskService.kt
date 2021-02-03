@@ -56,7 +56,7 @@ class TaskService(
             newTask.status.mapFromDomain(),
         )
 
-        val id = taskRepository.insertTask(data)!!
+        val id = taskRepository.insertTask(data)
 
         return taskRepository.findTaskById(id)!!
     }
