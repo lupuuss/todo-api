@@ -3,6 +3,7 @@ package com.github.lupuuss.todo.api.rest.controller
 import com.github.lupuuss.todo.api.core.OperationResult
 import com.github.lupuuss.todo.api.core.task.NewTask
 import com.github.lupuuss.todo.api.core.task.PatchTask
+import com.github.lupuuss.todo.api.core.task.Task
 import com.github.lupuuss.todo.api.core.user.User
 import com.github.lupuuss.todo.api.rest.auth.UserPrincipal
 import com.github.lupuuss.todo.api.rest.controller.exception.BadParamsException
@@ -35,10 +36,11 @@ class MeController(application: Application) : AbstractDIController(application)
         get("/task") {
             val pageNumber = parsePositiveIntParam("pageNumber")
             val pageSize = parsePositiveIntParam("pageSize")
+            val status = call.parameters["status"]?.let { Task.Status.valueOf(it) }
 
             val principal = call.principal<UserPrincipal>()!!
 
-            call.respond(taskService.getTasksByUserLogin(principal.login, pageNumber, pageSize))
+            call.respond(taskService.getTasksByUserLogin(principal.login, pageNumber, pageSize, status))
         }
 
         post("/task") {
