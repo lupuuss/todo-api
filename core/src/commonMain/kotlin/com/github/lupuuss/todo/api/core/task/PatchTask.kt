@@ -28,8 +28,5 @@ class PatchTask(map: Map<String, String?>? = null) {
 
     fun explicitSetDescription(): Boolean = map.containsKey("description")
 
-    fun asJsonMap(): Map<String, String> = map
-            .filter { (_, value) -> value != null }
-            .map { (key, value) -> key to value!! }
-            .toMap()
+    fun asJsonMap(): Map<String, String?> = map
 }
