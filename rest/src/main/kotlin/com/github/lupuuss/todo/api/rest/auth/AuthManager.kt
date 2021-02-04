@@ -12,15 +12,15 @@ open class AuthManager(
     private val userRepository: UserRepository
 ) {
 
-    fun isUserActive(login: String): Boolean {
+    fun isUserActive(id: String): Boolean {
         return userRepository
-            .findUserByLogin(login)
+            .findUserById(id)
             ?.active
             ?: false
     }
 
-    fun getUserIfActive(login: String): User? {
-        return userRepository.findUserByLogin(login)
+    private fun getUserIfActive(id: String): User? {
+        return userRepository.findUserById(id)
             ?.takeIf { it.active }
             ?.mapToDomain()
     }
@@ -34,7 +34,7 @@ open class AuthManager(
             ?.mapToDomain()
     }
 
-    fun validatePrincipal(login: String): Principal? {
-        return getUserIfActive(login)?.let { UserPrincipal(it) }
+    fun validatePrincipal(id: String): Principal? {
+        return getUserIfActive(id)?.let { UserPrincipal(it) }
     }
 }

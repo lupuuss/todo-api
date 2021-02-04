@@ -9,11 +9,11 @@ class UserService(
     private val repository: UserRepository,
 ) {
 
-    fun getUser(login: String): User {
+    fun getUser(id: String): User {
 
         return repository
-            .findUserByLogin(login)
+            .findUserById(id)
             ?.mapToDomain()
-            ?: throw ItemNotFoundException("login", login)
+            ?: throw ItemNotFoundException("id", id)
     }
 }

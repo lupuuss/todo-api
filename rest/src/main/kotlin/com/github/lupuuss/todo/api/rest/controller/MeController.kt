@@ -26,7 +26,7 @@ class MeController(application: Application) : AbstractDIController(application)
 
     private fun PipelineContext<Unit, ApplicationCall>.currentUser(): User {
         val principal = call.principal<UserPrincipal>()!!
-        return userService.getUser(principal.login)
+        return userService.getUser(principal.id)
     }
 
     override fun Route.getRoutes() {
@@ -40,14 +40,14 @@ class MeController(application: Application) : AbstractDIController(application)
 
             val principal = call.principal<UserPrincipal>()!!
 
-            call.respond(taskService.getTasksByUserLogin(principal.login, pageNumber, pageSize, status))
+            call.respond(taskService.getTasksByUserId(principal.id, pageNumber, pageSize, status))
         }
 
         post("/task") {
             val newTask = call.receive<NewTask>()
             val principal = call.principal<UserPrincipal>()!!
 
-            val task = taskService.createNewTaskForUser(principal.login, newTask)
+            val task = taskService.createNewTaskForUser(principal.id, newTask)
 
             call.respond(task)
         }
@@ -58,7 +58,7 @@ class MeController(application: Application) : AbstractDIController(application)
             val principal = call.principal<UserPrincipal>()!!
             val id = call.parameters["id"] ?: throw BadParamsException("Id is required!")
 
-            if (!taskService.checkTaskBelongToUser(id, principal.login)) {
+            if (!taskService.checkTaskBelongToUser(id, principal.id)) {
 
                 call.respond(HttpStatusCode.Unauthorized)
                 return@patch
@@ -72,7 +72,7 @@ class MeController(application: Application) : AbstractDIController(application)
             val id = call.parameters["id"] ?: throw BadParamsException("Id is required!")
             val principal = call.principal<UserPrincipal>()!!
 
-            if (!taskService.checkTaskBelongToUser(id, principal.login)) {
+            if (!taskService.checkTaskBelongToUser(id, principal.id)) {
                 call.respond(HttpStatusCode.Unauthorized)
                 return@delete
             }

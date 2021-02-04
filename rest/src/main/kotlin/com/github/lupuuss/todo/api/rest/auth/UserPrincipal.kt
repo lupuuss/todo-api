@@ -5,6 +5,9 @@ import io.ktor.auth.*
 
 class UserPrincipal(private val user: User): Principal {
 
+    val id: String
+    get() = user.id
+
     val login: String
     get() = user.login
 

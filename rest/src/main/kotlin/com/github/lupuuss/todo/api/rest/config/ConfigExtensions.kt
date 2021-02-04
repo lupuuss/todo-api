@@ -32,8 +32,8 @@ fun Application.configAuth() {
 
             validate { credentials ->
 
-                val login = credentials.payload.claims["login"]?.asString() ?: return@validate null
-                manager.validatePrincipal(login)
+                val id = credentials.payload.claims["id"]?.asString() ?: return@validate null
+                manager.validatePrincipal(id)
             }
         }
     }

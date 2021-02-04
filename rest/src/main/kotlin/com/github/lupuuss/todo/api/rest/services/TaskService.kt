@@ -7,15 +7,12 @@ import com.github.lupuuss.todo.api.core.task.NewTask
 import com.github.lupuuss.todo.api.core.task.PatchTask
 import com.github.lupuuss.todo.api.core.task.Task
 import com.github.lupuuss.todo.api.rest.repository.task.TaskData
-import com.github.lupuuss.todo.api.rest.repository.task.TaskDataChange
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
-import com.github.lupuuss.todo.api.rest.repository.user.UserData
 import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
 import com.github.lupuuss.todo.api.rest.services.exception.ItemNotFoundException
 import com.github.lupuuss.todo.api.rest.utils.date.DateProvider
 import com.github.lupuuss.todo.api.rest.utils.mapping.mapFromDomain
 import com.github.lupuuss.todo.api.rest.utils.mapping.mapToDomain
-import java.util.stream.Stream
 
 class TaskService(
     private val taskRepository: TaskRepository,
@@ -23,38 +20,33 @@ class TaskService(
     private val dateProvider: DateProvider
     ) {
 
-    private fun getUser(login: String): UserData {
-        return userRepository.findUserByLogin(login) ?: throw ItemNotFoundException("login", login)
-    }
-
-    fun getTasksByUserLogin(
-        login: String,
+    fun getTasksByUserId(
+        userId: String,
         pageNumber: Int,
         pageSize: Int,
         status: Task.Status? = null
     ): Page<Task> {
-        val user = getUser(login)
 
         if (status == null) {
             return Pager.page(pageNumber, pageSize) { skip, limit ->
-                taskRepository.findTasksByUser(user._id!!, skip, limit).map { it.mapToDomain() }
+                taskRepository.findTasksByUser(userId, skip, limit).map { it.mapToDomain() }
             }
         }
 
         val taskStatus = status.mapFromDomain()
 
         return Pager.page(pageNumber, pageSize) { skip, limit ->
-            taskRepository.findTasksByUserAndStatus(user._id!!, taskStatus, skip, limit).map { it.mapToDomain() }
+            taskRepository.findTasksByUserAndStatus(userId, taskStatus, skip, limit).map { it.mapToDomain() }
         }
     }
 
-    fun createNewTaskForUser(login: String, newTask: NewTask): TaskData {
+    fun createNewTaskForUser(userId: String, newTask: NewTask): TaskData {
 
-        val user = getUser(login)
+        if (userRepository.userNotExists(userId)) throw ItemNotFoundException("userId", userId)
 
         val data = TaskData(
             dateProvider.timestamp(),
-            user._id!!,
+            userId,
             newTask.name,
             newTask.description,
             newTask.status.mapFromDomain(),
@@ -84,20 +76,22 @@ class TaskService(
         taskRepository.replaceTask(task)
     }
 
-    fun checkTaskBelongToUser(id: String, login: String): Boolean {
+    fun checkTaskBelongToUser(id: String, userId: String): Boolean {
 
-        val user = userRepository.findUserByLogin(login) ?: return false
+        if (userRepository.userNotExists(userId)) return false
+
         val task = taskRepository.findTaskById(id) ?: throw ItemNotFoundException("id", id)
 
-        return user._id!! == task.userId
+        return userId == task.userId
     }
 
     fun deleteTask(id: String): Long = taskRepository.deleteTask(id)
 
-    fun streamUserTasksChange(login: String): Sequence<TaskChange> {
-        val user = userRepository.findUserByLogin(login) ?: throw ItemNotFoundException("login", login)
+    fun streamUserTasksChange(userId: String): Sequence<TaskChange> {
 
-        return taskRepository.streamUserTaskChanges(user._id!!).map {
+        if (userRepository.userNotExists(userId)) throw ItemNotFoundException("userId", userId)
+
+        return taskRepository.streamUserTaskChanges(userId).map {
             TaskChange(
                 it._id,
                 Operation.valueOf(it.type.name),

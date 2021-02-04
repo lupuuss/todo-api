@@ -18,7 +18,6 @@ class LiveController(application: Application) : AbstractDIController(applicatio
 
     private val taskService: TaskService by instance()
     private val authManager: JwtAuthManager by instance()
-    private val verifier = authManager.verifier
 
     override fun Route.getRoutes() {
 
@@ -26,7 +25,7 @@ class LiveController(application: Application) : AbstractDIController(applicatio
 
             logInfo("Connection received! Waiting for token...")
 
-            val principal = verifyToken()
+            val principal = receiveAndVerifyToken()
 
             if (principal == null) {
                 logWarn("Token verification failed!")
@@ -45,7 +44,7 @@ class LiveController(application: Application) : AbstractDIController(applicatio
         close(CloseReason(CloseReason.Codes.PROTOCOL_ERROR, "Unauthorized"))
     }
 
-    private suspend fun DefaultWebSocketServerSession.verifyToken(): UserPrincipal? {
+    private suspend fun DefaultWebSocketServerSession.receiveAndVerifyToken(): UserPrincipal? {
 
         return (incoming.receive() as? Frame.Text)
             ?.readText()

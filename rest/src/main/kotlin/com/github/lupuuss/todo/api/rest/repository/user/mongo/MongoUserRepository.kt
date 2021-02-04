@@ -35,4 +35,6 @@ class MongoUserRepository(driver: MongoClient, database: String) : UserRepositor
     override fun saveUser(user: UserData) = collection.save(user)
 
     override fun deleteUser(id: String): Long = collection.deleteOneById(id).deletedCount
+
+    override fun userNotExists(id: String): Boolean = collection.findOneById(id) == null
 }

@@ -15,4 +15,6 @@ interface UserRepository {
     fun saveUser(user: UserData)
 
     fun deleteUser(id: String): Long
+
+    fun userNotExists(id: String): Boolean
 }

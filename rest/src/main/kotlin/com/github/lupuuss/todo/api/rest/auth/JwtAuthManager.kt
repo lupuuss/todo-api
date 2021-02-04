@@ -4,7 +4,6 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.JWTVerifier
 import com.auth0.jwt.algorithms.Algorithm
 import com.github.lupuuss.todo.api.core.user.Credentials
-import com.github.lupuuss.todo.api.core.user.User
 import com.github.lupuuss.todo.api.rest.auth.hash.HashProvider
 import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
 import java.time.Duration
@@ -32,13 +31,12 @@ class JwtAuthManager(
     fun loginJwt(credentials: Credentials): String? {
         val user = login(credentials) ?: return null
 
-        return makeToken(user, expirationDate())
+        return makeToken(user.id, expirationDate())
     }
 
-    private fun makeToken(user: User, expireDate: Date): String? {
+    private fun makeToken(id: String, expireDate: Date): String? {
         return JWT.create()
-            .withClaim("login", user.login)
-            .withClaim("role", user.role.name)
+            .withClaim("id", id)
             .withIssuer(issuer)
             .withExpiresAt(expireDate)
             .sign(algorithm)
@@ -53,7 +51,7 @@ class JwtAuthManager(
             return null
         }
 
-        val login = decoded.claims["login"]?.asString() ?: return null
+        val id = decoded.claims["id"]?.asString() ?: return null
 
         val expired = Duration.between(Instant.now(), decoded.expiresAt.toInstant())
 
@@ -61,9 +59,9 @@ class JwtAuthManager(
             return null
         }
 
-        val user = getUserIfActive(login) ?: return null
+        if (!isUserActive(id)) return null
 
-        return makeToken(user, expirationDate())
+        return makeToken(id, expirationDate())
     }
 
     fun verifyJwt(token: String): UserPrincipal? {
@@ -76,7 +74,7 @@ class JwtAuthManager(
 
         return decoded
             ?.claims
-            ?.get("login")
+            ?.get("id")
             ?.asString()
             ?.let { validatePrincipal(it) }
                 as? UserPrincipal

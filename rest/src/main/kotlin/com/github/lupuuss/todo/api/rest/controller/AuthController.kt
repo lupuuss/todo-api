@@ -27,7 +27,16 @@ class AuthController(application: Application) : AbstractDIController(applicatio
         }
 
         post("/token") {
-            val (type, value) = call.request.headers["Authorization"]?.split(" ") ?: return@post call.respond(HttpStatusCode.Unauthorized)
+
+            val split = call
+                .request
+                .headers["Authorization"]
+                ?.split(" ")
+                ?: return@post call.respond(HttpStatusCode.Unauthorized)
+
+            if (split.size < 2) return@post call.respond(HttpStatusCode.Unauthorized)
+
+            val (type, value) = split
 
             if (type != "Bearer") return@post call.respond(HttpStatusCode.Unauthorized)
 

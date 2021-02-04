@@ -9,5 +9,5 @@ fun  PipelineContext<*, ApplicationCall>.parsePositiveIntParam(name: String): In
     return value
         ?.toInt()
         ?.takeIf { it >= 0 }
-        ?: throw BadParamsException("Expected positive integer; Received: '$value'")
+        ?: throw BadParamsException("Expected param '$name' to be positive integer; Received: '$value'")
 }
