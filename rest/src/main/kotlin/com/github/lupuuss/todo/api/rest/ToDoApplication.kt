@@ -5,6 +5,7 @@ import com.github.lupuuss.todo.api.rest.config.Config
 import com.github.lupuuss.todo.api.rest.config.configAuth
 import com.github.lupuuss.todo.api.rest.config.configKodein
 import com.github.lupuuss.todo.api.rest.controller.AuthController
+import com.github.lupuuss.todo.api.rest.controller.LiveController
 import com.github.lupuuss.todo.api.rest.controller.MeController
 import com.github.lupuuss.todo.api.rest.controller.exception.BadParamsException
 import com.github.lupuuss.todo.api.rest.services.exception.ItemNotFoundException
@@ -15,14 +16,19 @@ import io.ktor.gson.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.websocket.*
 import org.kodein.di.instance
 import org.kodein.di.ktor.controller.controller
+import org.slf4j.event.Level
 
 fun Application.main() {
     routing {
 
-        install(CallLogging)
+        install(CallLogging) {
+            level = Level.INFO
+        }
         install(ContentNegotiation) { gson() }
+        install(WebSockets)
 
         Config.init(environment.config)
 
@@ -44,7 +50,11 @@ fun Application.main() {
         controller("/auth") { AuthController(instance()) }
 
         authenticate {
+
             controller("/me") {  MeController(instance()) }
+
         }
+
+        controller("/me/live") { LiveController(instance()) }
     }
 }

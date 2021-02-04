@@ -18,4 +18,6 @@ interface TaskRepository {
     fun insertTask(task: TaskData): String
 
     fun deleteTask(id: String): Long
+
+    fun streamUserTaskChanges(userId: String): Sequence<TaskDataChange>
 }

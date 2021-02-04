@@ -1,10 +1,13 @@
 package com.github.lupuuss.todo.api.rest.services
 
 import com.github.lupuuss.todo.api.core.Page
+import com.github.lupuuss.todo.api.core.live.Operation
+import com.github.lupuuss.todo.api.core.live.TaskChange
 import com.github.lupuuss.todo.api.core.task.NewTask
 import com.github.lupuuss.todo.api.core.task.PatchTask
 import com.github.lupuuss.todo.api.core.task.Task
 import com.github.lupuuss.todo.api.rest.repository.task.TaskData
+import com.github.lupuuss.todo.api.rest.repository.task.TaskDataChange
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
 import com.github.lupuuss.todo.api.rest.repository.user.UserData
 import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
@@ -12,6 +15,7 @@ import com.github.lupuuss.todo.api.rest.services.exception.ItemNotFoundException
 import com.github.lupuuss.todo.api.rest.utils.date.DateProvider
 import com.github.lupuuss.todo.api.rest.utils.mapping.mapFromDomain
 import com.github.lupuuss.todo.api.rest.utils.mapping.mapToDomain
+import java.util.stream.Stream
 
 class TaskService(
     private val taskRepository: TaskRepository,
@@ -89,4 +93,16 @@ class TaskService(
     }
 
     fun deleteTask(id: String): Long = taskRepository.deleteTask(id)
+
+    fun streamUserTasksChange(login: String): Sequence<TaskChange> {
+        val user = userRepository.findUserByLogin(login) ?: throw ItemNotFoundException("login", login)
+
+        return taskRepository.streamUserTaskChanges(user._id!!).map {
+            TaskChange(
+                it._id,
+                Operation.valueOf(it.type.name),
+                it.task?.mapToDomain()
+            )
+        }
+    }
 }

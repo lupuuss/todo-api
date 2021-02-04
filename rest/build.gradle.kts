@@ -16,7 +16,7 @@ repositories {
 
 val vKtor = "1.5.1"
 val vKodein = "7.2.0"
-val vSlf4j = "1.7.25"
+val vSlf4j = "2.0.0-alpha1"
 dependencies {
     implementation(project(":core"))
 
@@ -33,6 +33,7 @@ dependencies {
     implementation("io.ktor:ktor-gson:$vKtor")
     implementation("io.ktor:ktor-auth:$vKtor")
     implementation("io.ktor:ktor-auth-jwt:$vKtor")
+    implementation("io.ktor:ktor-websockets:$vKtor")
 
     // Kodein
 

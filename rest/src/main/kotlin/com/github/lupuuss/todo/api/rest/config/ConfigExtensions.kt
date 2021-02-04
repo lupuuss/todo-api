@@ -31,7 +31,7 @@ fun Application.configAuth() {
             verifier(JWTConfig.buildVerifier())
             validate { credentials ->
                 val login = credentials.payload.claims["login"]?.asString() ?: return@validate null
-                di().direct.instance<AuthManager>().validatePrinciple(login)
+                di().direct.instance<AuthManager>().validatePrincipal(login)
             }
         }
     }

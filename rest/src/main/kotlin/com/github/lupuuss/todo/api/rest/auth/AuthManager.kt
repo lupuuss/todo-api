@@ -28,7 +28,7 @@ class AuthManager(
             ?.mapToDomain()
     }
 
-    fun validatePrinciple(login: String): Principal? {
+    fun validatePrincipal(login: String): Principal? {
         return userRepository.findUserByLogin(login)
             ?.takeIf { it.active }
             ?.mapToDomain()

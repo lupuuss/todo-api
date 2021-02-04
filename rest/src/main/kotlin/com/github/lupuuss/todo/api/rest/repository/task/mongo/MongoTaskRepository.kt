@@ -1,12 +1,16 @@
 package com.github.lupuuss.todo.api.rest.repository.task.mongo
 
 import com.github.lupuuss.todo.api.rest.repository.task.TaskData
+import com.github.lupuuss.todo.api.rest.repository.task.TaskDataChange
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
 import com.github.lupuuss.todo.api.rest.utils.mongo.applyLimitsOptionally
 import com.mongodb.client.MongoClient
+import com.mongodb.client.model.Filters
+import com.mongodb.client.model.changestream.ChangeStreamDocument
+import com.mongodb.client.model.changestream.OperationType
+import org.bson.conversions.Bson
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
-
 
 class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskRepository {
     private val collection = driver
@@ -53,4 +57,24 @@ class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskReposi
 
     override fun deleteTask(id: String): Long = collection.deleteOneById(id).deletedCount
 
+    override fun streamUserTaskChanges(userId: String): Sequence<TaskDataChange> {
+
+        return collection
+            .watch()
+            .cursor()
+            .asSequence()
+            .filter { userId == it?.fullDocument?.userId }
+            .map {
+
+                val type = when (it.operationType) {
+                    OperationType.INSERT -> TaskDataChange.Type.INSERT
+                    OperationType.UPDATE -> TaskDataChange.Type.UPDATE
+                    OperationType.REPLACE -> TaskDataChange.Type.UPDATE
+                    OperationType.DELETE -> TaskDataChange.Type.DELETE
+                    else -> throw IllegalStateException("Other types should be filtered before!")
+                }
+
+                TaskDataChange(it.documentKey!!["_id"]!!.asString().value, type, it.fullDocument)
+            }
+    }
 }
