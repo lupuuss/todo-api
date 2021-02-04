@@ -1,10 +1,8 @@
 package com.github.lupuuss.todo.api.rest.controller
 
-import com.github.lupuuss.todo.api.rest.auth.AuthManager
-import com.github.lupuuss.todo.api.rest.auth.JWTConfig
+import com.github.lupuuss.todo.api.rest.auth.JwtAuthManager
 import com.github.lupuuss.todo.api.rest.auth.UserPrincipal
 import com.github.lupuuss.todo.api.rest.services.TaskService
-import com.github.lupuuss.todo.api.rest.utils.ktor.logError
 import com.github.lupuuss.todo.api.rest.utils.ktor.logInfo
 import com.github.lupuuss.todo.api.rest.utils.ktor.logWarn
 import io.ktor.application.*
@@ -19,8 +17,8 @@ import org.litote.kmongo.json
 class LiveController(application: Application) : AbstractDIController(application) {
 
     private val taskService: TaskService by instance()
-    private val authManager: AuthManager by instance()
-    private val verifier = JWTConfig.buildVerifier()
+    private val authManager: JwtAuthManager by instance()
+    private val verifier = authManager.verifier
 
     override fun Route.getRoutes() {
 
@@ -28,7 +26,7 @@ class LiveController(application: Application) : AbstractDIController(applicatio
 
             logInfo("Connection received! Waiting for token...")
 
-            val principal = authorize()
+            val principal = verifyToken()
 
             if (principal == null) {
                 logWarn("Token verification failed!")
@@ -47,16 +45,10 @@ class LiveController(application: Application) : AbstractDIController(applicatio
         close(CloseReason(CloseReason.Codes.PROTOCOL_ERROR, "Unauthorized"))
     }
 
-    private suspend fun DefaultWebSocketServerSession.authorize(): UserPrincipal? {
-        val principal = (incoming.receive() as? Frame.Text)
-            ?.readText()
-            ?.let { try { verifier.verify(it) } catch (e: Exception) { logError(e); null } }
-            ?.claims
-            ?.get("login")
-            ?.asString()
-            ?.let { authManager.validatePrincipal(it) }
-            as? UserPrincipal
+    private suspend fun DefaultWebSocketServerSession.verifyToken(): UserPrincipal? {
 
-        return principal
+        return (incoming.receive() as? Frame.Text)
+            ?.readText()
+            ?.let { authManager.verifyJwt(it) }
     }
 }

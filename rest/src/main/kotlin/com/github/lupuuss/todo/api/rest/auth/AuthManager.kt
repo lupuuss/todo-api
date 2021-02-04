@@ -7,16 +7,22 @@ import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
 import com.github.lupuuss.todo.api.rest.utils.mapping.mapToDomain
 import io.ktor.auth.*
 
-class AuthManager(
+open class AuthManager(
     private val hash: HashProvider,
     private val userRepository: UserRepository
-    ) {
+) {
 
     fun isUserActive(login: String): Boolean {
         return userRepository
             .findUserByLogin(login)
             ?.active
             ?: false
+    }
+
+    fun getUserIfActive(login: String): User? {
+        return userRepository.findUserByLogin(login)
+            ?.takeIf { it.active }
+            ?.mapToDomain()
     }
 
     fun login(credentials: Credentials): User? {
@@ -29,9 +35,6 @@ class AuthManager(
     }
 
     fun validatePrincipal(login: String): Principal? {
-        return userRepository.findUserByLogin(login)
-            ?.takeIf { it.active }
-            ?.mapToDomain()
-            ?.let { UserPrincipal(it) }
+        return getUserIfActive(login)?.let { UserPrincipal(it) }
     }
 }

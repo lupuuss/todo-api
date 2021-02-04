@@ -1,7 +1,7 @@
 package com.github.lupuuss.todo.api.rest.config
 
-import com.github.lupuuss.todo.api.rest.auth.AuthManager
-import com.github.lupuuss.todo.api.rest.auth.JWTConfig
+import com.auth0.jwt.algorithms.Algorithm
+import com.github.lupuuss.todo.api.rest.auth.JwtAuthManager
 import com.github.lupuuss.todo.api.rest.auth.hash.BCryptHashProvider
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
 import com.github.lupuuss.todo.api.rest.repository.task.mongo.MongoTaskRepository
@@ -23,15 +23,17 @@ fun Application.configAuth() {
 
     val config = Config.get()
 
-    JWTConfig.init(config.jwtSecret, config.jwtIssuer, config.jwtRealm)
-
     install(Authentication) {
         jwt {
+            val manager = di().direct.instance<JwtAuthManager>()
+
             realm = config.jwtRealm
-            verifier(JWTConfig.buildVerifier())
+            verifier(manager.verifier)
+
             validate { credentials ->
+
                 val login = credentials.payload.claims["login"]?.asString() ?: return@validate null
-                di().direct.instance<AuthManager>().validatePrincipal(login)
+                manager.validatePrincipal(login)
             }
         }
     }
@@ -53,6 +55,16 @@ fun Application.configKodein() {
         bind<UserService>() with singleton { UserService(instance()) }
         bind<TaskService>() with singleton { TaskService(instance(), instance(), instance()) }
 
-        bind<AuthManager>() with provider { AuthManager(BCryptHashProvider(), instance()) }
+        bind<JwtAuthManager>() with singleton {
+            JwtAuthManager(
+                hash = BCryptHashProvider(),
+                userRepository = instance(),
+                algorithm = Algorithm.HMAC512(config.jwtSecret),
+                issuer = config.jwtIssuer,
+                realm = config.jwtRealm,
+                expire = config.jwtExpire,
+                refresh = config.jwtRefresh
+            )
+        }
     }
 }

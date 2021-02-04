@@ -2,7 +2,7 @@ package com.github.lupuuss.todo.api.rest.controller
 
 import com.github.lupuuss.todo.api.core.user.Credentials
 import com.github.lupuuss.todo.api.rest.auth.AuthManager
-import com.github.lupuuss.todo.api.rest.auth.JWTConfig
+import com.github.lupuuss.todo.api.rest.auth.JwtAuthManager
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -13,7 +13,7 @@ import org.kodein.di.ktor.controller.AbstractDIController
 
 class AuthController(application: Application) : AbstractDIController(application) {
 
-    private val authManager: AuthManager by instance()
+    private val authManager: JwtAuthManager by instance()
 
     override fun Route.getRoutes() {
 
@@ -21,9 +21,17 @@ class AuthController(application: Application) : AbstractDIController(applicatio
 
             val credential = call.receive<Credentials>()
 
-            val user = authManager.login(credential) ?: return@post call.respond(HttpStatusCode.Unauthorized)
+            val token = authManager.loginJwt(credential) ?: return@post call.respond(HttpStatusCode.Unauthorized)
 
-            val token = JWTConfig.makeToken(user) ?: return@post call.respond(HttpStatusCode.Unauthorized)
+            call.respond(token)
+        }
+
+        post("/token") {
+            val (type, value) = call.request.headers["Authorization"]?.split(" ") ?: return@post call.respond(HttpStatusCode.Unauthorized)
+
+            if (type != "Bearer") return@post call.respond(HttpStatusCode.Unauthorized)
+
+            val token = authManager.refreshToken(value) ?: return@post call.respond(HttpStatusCode.Unauthorized)
 
             call.respond(token)
         }
