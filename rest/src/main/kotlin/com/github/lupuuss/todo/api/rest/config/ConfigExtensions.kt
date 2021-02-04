@@ -3,6 +3,7 @@ package com.github.lupuuss.todo.api.rest.config
 import com.auth0.jwt.algorithms.Algorithm
 import com.github.lupuuss.todo.api.rest.auth.JwtAuthManager
 import com.github.lupuuss.todo.api.rest.auth.hash.BCryptHashProvider
+import com.github.lupuuss.todo.api.rest.auth.hash.HashProvider
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
 import com.github.lupuuss.todo.api.rest.repository.task.mongo.MongoTaskRepository
 import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
@@ -52,12 +53,14 @@ fun Application.configKodein() {
 
         bind<DateProvider>() with singleton { CommonDateProvider() }
 
-        bind<UserService>() with singleton { UserService(instance()) }
+        bind<HashProvider>() with singleton { BCryptHashProvider() }
+
+        bind<UserService>() with singleton { UserService(instance(), instance()) }
         bind<TaskService>() with singleton { TaskService(instance(), instance(), instance()) }
 
         bind<JwtAuthManager>() with singleton {
             JwtAuthManager(
-                hash = BCryptHashProvider(),
+                hash = instance(),
                 userRepository = instance(),
                 algorithm = Algorithm.HMAC512(config.jwtSecret),
                 issuer = config.jwtIssuer,

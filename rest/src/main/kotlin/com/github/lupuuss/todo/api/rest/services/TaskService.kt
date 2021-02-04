@@ -42,7 +42,7 @@ class TaskService(
 
     fun createNewTaskForUser(userId: String, newTask: NewTask): TaskData {
 
-        if (userRepository.userNotExists(userId)) throw ItemNotFoundException("userId", userId)
+        if (userRepository.userNotExists(userId)) throw ItemNotFoundException("User", "id", userId)
 
         val data = TaskData(
             dateProvider.timestamp(),
@@ -59,7 +59,7 @@ class TaskService(
 
     fun patchTask(id: String, patch: PatchTask) {
 
-        val task = taskRepository.findTaskById(id) ?: throw ItemNotFoundException("id", id)
+        val task = taskRepository.findTaskById(id) ?: throw ItemNotFoundException("Task", "id", id)
 
         if (patch.explicitSetStatus()) {
             task.status = patch.status?.mapFromDomain()!!
@@ -80,7 +80,7 @@ class TaskService(
 
         if (userRepository.userNotExists(userId)) return false
 
-        val task = taskRepository.findTaskById(id) ?: throw ItemNotFoundException("id", id)
+        val task = taskRepository.findTaskById(id) ?: throw ItemNotFoundException("Task", "id", id)
 
         return userId == task.userId
     }
@@ -89,7 +89,7 @@ class TaskService(
 
     fun streamUserTasksChange(userId: String): Sequence<TaskChange> {
 
-        if (userRepository.userNotExists(userId)) throw ItemNotFoundException("userId", userId)
+        if (userRepository.userNotExists(userId)) throw ItemNotFoundException("User", "id", userId)
 
         return taskRepository.streamUserTaskChanges(userId).map {
             TaskChange(
