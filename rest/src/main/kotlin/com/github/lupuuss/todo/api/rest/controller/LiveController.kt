@@ -34,7 +34,7 @@ class LiveController(application: Application) : AbstractDIController(applicatio
                 logInfo("Token verification successful! User '${principal.login}' is listening!")
             }
 
-            taskService.streamUserTasksChange(principal.login).forEach {
+            taskService.streamUserTasksChange(principal.id).forEach {
                 send(Frame.Text(it.json))
             }
         }
