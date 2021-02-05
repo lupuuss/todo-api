@@ -87,16 +87,17 @@ class TaskService(
 
     fun deleteTask(id: String): Long = taskRepository.deleteTask(id)
 
-    fun streamUserTasksChange(userId: String): Sequence<TaskChange> {
+    fun addOnTaskChangedListener(userId: String, listener: (TaskChange) -> Unit): AutoCloseable {
 
         if (userRepository.userNotExists(userId)) throw ItemNotFoundException("User", "id", userId)
 
-        return taskRepository.streamUserTaskChanges(userId).map {
-            TaskChange(
+        return taskRepository.addOnTaskChangeListener(userId) {
+            val taskChange = TaskChange(
                 it._id,
                 Operation.valueOf(it.type.name),
                 it.task?.mapToDomain()
             )
+            listener(taskChange)
         }
     }
 }

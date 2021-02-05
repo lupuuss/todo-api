@@ -10,6 +10,8 @@ import io.ktor.auth.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.channels.receiveOrNull
+import kotlinx.coroutines.channels.sendBlocking
 import org.kodein.di.instance
 import org.kodein.di.ktor.controller.AbstractDIController
 import org.litote.kmongo.json
@@ -34,8 +36,15 @@ class LiveController(application: Application) : AbstractDIController(applicatio
                 logInfo("Token verification successful! User '${principal.login}' is listening!")
             }
 
-            taskService.streamUserTasksChange(principal.id).forEach {
-                send(Frame.Text(it.json))
+            val disposer = taskService.addOnTaskChangedListener(principal.id) {
+
+                if (!outgoing.isClosedForSend) outgoing.sendBlocking(Frame.Text(it.json))
+            }
+
+            disposer.use {
+                while (true) {
+                    incoming.receiveOrNull() ?: break
+                }
             }
         }
     }

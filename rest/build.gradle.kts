@@ -17,6 +17,8 @@ repositories {
 val vKtor = "1.5.1"
 val vKodein = "7.2.0"
 val vSlf4j = "2.0.0-alpha1"
+val vKMongo = "4.2.4"
+
 dependencies {
     implementation(project(":core"))
 
@@ -41,8 +43,7 @@ dependencies {
     implementation("org.kodein.di:kodein-di-framework-ktor-server-controller-jvm:$vKodein")
 
     // mongo
-
-    implementation("org.litote.kmongo:kmongo:4.2.4")
+    implementation("org.litote.kmongo:kmongo:$vKMongo")
 
     testImplementation(kotlin("test-junit"))
 }
