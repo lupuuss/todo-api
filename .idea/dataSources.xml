@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="MongoDB - todo-db@todo-cluster.95uwn.mongodb.net" uuid="73a4f0ac-f5bb-4cf1-b084-3cd9b661e490">
+    <data-source source="LOCAL" name="todo-db@todo-cluster.95uwn.mongodb.net" uuid="0421a90f-e876-4afc-8719-304c991905d4">
       <driver-ref>mongo</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.dbschema.MongoJdbcDriver</jdbc-driver>

@@ -2,11 +2,11 @@ package com.github.lupuuss.todo.api.rest.repository.user
 
 data class UserData(
     var _id: String? = null,
-    val login: String,
-    val email: String,
-    val active: Boolean,
-    val role: Role,
-    val password: String
+    var login: String,
+    var email: String,
+    var active: Boolean,
+    var role: Role,
+    var password: String
 ) {
     enum class Role {
         USER, ADMIN
