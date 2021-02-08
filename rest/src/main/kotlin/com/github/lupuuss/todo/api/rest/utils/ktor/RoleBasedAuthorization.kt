@@ -76,8 +76,8 @@ fun Route.withRoles(roles: Set<Any>, callback: Route.() -> Unit): Route {
 
     val feature = application.feature(RoleBasedAuthorization)
 
-    if (roles !in feature.roles) {
-        throw IllegalArgumentException("$roles doesn't match roles defined in config! Defined roles: ${feature.roles}")
+    if (!roles.all { feature.roles.contains(it) }) {
+        throw IllegalArgumentException("$roles don't match roles defined in config! Defined roles: ${feature.roles}")
     }
 
     val roleRoute = createChild(RoleRouteSelector())
