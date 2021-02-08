@@ -8,6 +8,7 @@ import com.github.lupuuss.todo.api.rest.controller.AuthController
 import com.github.lupuuss.todo.api.rest.controller.LiveController
 import com.github.lupuuss.todo.api.rest.controller.MeController
 import com.github.lupuuss.todo.api.rest.controller.exception.BadParamsException
+import com.github.lupuuss.todo.api.rest.services.exception.ItemAlreadyExistsException
 import com.github.lupuuss.todo.api.rest.services.exception.ItemNotFoundException
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -36,6 +37,11 @@ fun Application.main() {
         configAuth()
 
         install(StatusPages) {
+
+            exception<ItemAlreadyExistsException> { cause ->
+                call.respond(HttpStatusCode.Conflict, Message(cause.message ?: ""))
+            }
+
             exception<ItemNotFoundException> { cause ->
                 call.respond(HttpStatusCode.NotFound, Message(cause.message ?: ""))
             }

@@ -4,7 +4,6 @@ import com.github.lupuuss.todo.api.core.user.Credentials
 import com.github.lupuuss.todo.api.core.user.NewUser
 import com.github.lupuuss.todo.api.core.user.RegisterUser
 import com.github.lupuuss.todo.api.core.user.User
-import com.github.lupuuss.todo.api.rest.auth.AuthManager
 import com.github.lupuuss.todo.api.rest.auth.JwtAuthManager
 import com.github.lupuuss.todo.api.rest.services.UserService
 import io.ktor.application.*
