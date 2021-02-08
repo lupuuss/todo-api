@@ -1,5 +1,6 @@
 package com.github.lupuuss.todo.api.rest.controller
 
+import com.github.lupuuss.todo.api.core.user.User
 import com.github.lupuuss.todo.api.rest.auth.JwtAuthManager
 import com.github.lupuuss.todo.api.rest.auth.UserPrincipal
 import com.github.lupuuss.todo.api.rest.services.TaskService
@@ -58,5 +59,6 @@ class LiveController(application: Application) : AbstractDIController(applicatio
         return (incoming.receive() as? Frame.Text)
             ?.readText()
             ?.let { authManager.verifyJwt(it) }
+            ?.takeIf { it.isInRole(User.Role.USER) }
     }
 }
