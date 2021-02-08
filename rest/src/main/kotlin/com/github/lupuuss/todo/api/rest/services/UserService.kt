@@ -1,5 +1,6 @@
 package com.github.lupuuss.todo.api.rest.services
 
+import com.github.lupuuss.todo.api.core.Page
 import com.github.lupuuss.todo.api.core.user.NewUser
 import com.github.lupuuss.todo.api.core.user.User
 import com.github.lupuuss.todo.api.rest.auth.hash.HashProvider
@@ -22,7 +23,7 @@ class UserService(
             ?: throw ItemNotFoundException("User", "id", id)
     }
 
-    fun createUser(user: NewUser) {
+    fun createUser(user: NewUser): User {
 
         val hashedPassword = hash.generate(user.password)
 
@@ -43,6 +44,18 @@ class UserService(
             hashedPassword
         )
 
-        repository.saveUser(userData)
+        val id = repository.insertUser(userData)
+
+        return repository.findUserById(id)!!.mapToDomain()
+    }
+
+    fun getAllUsers(
+        pageNumber: Int,
+        pageSize: Int
+    ): Page<User> {
+
+        return Pager.page(pageNumber, pageSize) { skip, limit ->
+            repository.findAll(skip, limit).map { it.mapToDomain() }
+        }
     }
 }

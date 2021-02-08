@@ -12,7 +12,9 @@ interface UserRepository {
 
     fun findUserById(id: String): UserData?
 
-    fun saveUser(user: UserData)
+    fun replaceUser(user: UserData)
+
+    fun insertUser(user: UserData): String
 
     fun deleteUser(id: String): Long
 

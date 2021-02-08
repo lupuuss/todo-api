@@ -40,7 +40,7 @@ class TaskService(
         }
     }
 
-    fun createNewTaskForUser(userId: String, newTask: NewTask): TaskData {
+    fun createNewTaskForUser(userId: String, newTask: NewTask): Task {
 
         if (userRepository.userNotExists(userId)) throw ItemNotFoundException("User", "id", userId)
 
@@ -54,7 +54,7 @@ class TaskService(
 
         val id = taskRepository.insertTask(data)
 
-        return taskRepository.findTaskById(id)!!
+        return taskRepository.findTaskById(id)!!.mapToDomain()
     }
 
     fun patchTask(id: String, patch: PatchTask) {
