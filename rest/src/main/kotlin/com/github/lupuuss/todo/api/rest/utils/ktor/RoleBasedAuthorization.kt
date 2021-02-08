@@ -1,5 +1,6 @@
 package com.github.lupuuss.todo.api.rest.utils.ktor
 
+import com.github.lupuuss.todo.api.rest.auth.UserPrincipal
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.*
@@ -33,7 +34,7 @@ class RoleBasedAuthorization(configure: Configuration<*>) {
         }
     }
 
-    fun interceptPipeline(pipeline: ApplicationCallPipeline, role: Any) {
+    fun interceptPipeline(pipeline: ApplicationCallPipeline, roles: Set<Any>) {
 
         val phase = PipelinePhase("RoleAuthorization")
 
@@ -41,9 +42,11 @@ class RoleBasedAuthorization(configure: Configuration<*>) {
 
         pipeline.intercept(phase) {
 
-            val principal = call.principal<Principal>()!!
+            val principal = call.principal<UserPrincipal>()!!
+            val principalRole = principal.let(roleExtractor)
+            if (principalRole !in roles) {
 
-            if (principal.let(roleExtractor) != role) {
+                logWarn("No permission for '${principal.login}'! Expected one of roles: $roles! Actual: $principalRole")
 
                 call.respond(HttpStatusCode.Unauthorized)
                 return@intercept finish()
