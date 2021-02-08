@@ -85,7 +85,7 @@ class MeController(application: Application) : AbstractDIController(application)
 
     private fun PatchTask.validated(): PatchTask {
 
-        if (explicitSetName() && name.isNullOrBlank()) throw BadParamsException("Name cannot be set to null!")
+        if (isExplicitSet(PatchTask::name) && name.isNullOrBlank()) throw BadParamsException("Name cannot be set to null!")
 
         try {
             status
@@ -93,7 +93,7 @@ class MeController(application: Application) : AbstractDIController(application)
             throw BadParamsException("Bad enum constant!")
         }
 
-        if (explicitSetStatus() && status == null) throw BadParamsException("Status cannot be set to null!")
+        if (isExplicitSet(PatchTask::status) && status == null) throw BadParamsException("Status cannot be set to null!")
 
         return this
     }

@@ -61,15 +61,15 @@ class TaskService(
 
         val task = taskRepository.findTaskById(id) ?: throw ItemNotFoundException("Task", "id", id)
 
-        if (patch.explicitSetStatus()) {
+        if (patch.isExplicitSet(PatchTask::status)) {
             task.status = patch.status?.mapFromDomain()!!
         }
 
-        if (patch.explicitSetName()) {
+        if (patch.isExplicitSet(PatchTask::name)) {
             task.name = patch.name!!
         }
 
-        if (patch.explicitSetDescription()) {
+        if (patch.isExplicitSet(PatchTask::description)) {
             task.description = patch.description
         }
 
