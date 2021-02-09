@@ -10,6 +10,4 @@ data class User(
     enum class Role {
         USER, ADMIN
     }
-
-    fun isAdmin() = role == Role.ADMIN
 }

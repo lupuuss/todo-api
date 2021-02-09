@@ -29,6 +29,8 @@ private class CursorDisposer(
 
         lock.lock()
         lock.unlock()
+
+        println("Listener closed!")
     }
 }
 
