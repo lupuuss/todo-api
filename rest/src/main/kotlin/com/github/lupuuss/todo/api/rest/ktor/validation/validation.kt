@@ -1,4 +1,4 @@
-package com.github.lupuuss.todo.api.rest.utils.validation
+package com.github.lupuuss.todo.api.rest.ktor.validation
 
 fun String?.isValidEmail(): Boolean{
 

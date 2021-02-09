@@ -1,11 +1,10 @@
 package com.github.lupuuss.todo.api.rest.controller
 
-import com.github.lupuuss.todo.api.core.user.User
 import com.github.lupuuss.todo.api.rest.auth.JwtAuthManager
 import com.github.lupuuss.todo.api.rest.auth.UserPrincipal
 import com.github.lupuuss.todo.api.rest.services.TaskService
-import com.github.lupuuss.todo.api.rest.utils.ktor.logInfo
-import com.github.lupuuss.todo.api.rest.utils.ktor.logWarn
+import com.github.lupuuss.todo.api.rest.ktor.logInfo
+import com.github.lupuuss.todo.api.rest.ktor.logWarn
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.cio.websocket.*

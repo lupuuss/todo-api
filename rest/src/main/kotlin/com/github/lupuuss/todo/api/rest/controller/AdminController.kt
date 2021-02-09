@@ -6,8 +6,8 @@ import com.github.lupuuss.todo.api.core.user.User
 import com.github.lupuuss.todo.api.rest.auth.UserPrincipal
 import com.github.lupuuss.todo.api.rest.controller.exception.BadParamsException
 import com.github.lupuuss.todo.api.rest.services.UserService
-import com.github.lupuuss.todo.api.rest.utils.ktor.parsePositiveIntParam
-import com.github.lupuuss.todo.api.rest.utils.validation.isNotValidEmail
+import com.github.lupuuss.todo.api.rest.ktor.parsePositiveIntParam
+import com.github.lupuuss.todo.api.rest.ktor.validation.isNotValidEmail
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.http.*

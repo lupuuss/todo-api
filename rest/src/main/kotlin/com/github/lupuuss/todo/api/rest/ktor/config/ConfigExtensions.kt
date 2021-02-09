@@ -1,4 +1,4 @@
-package com.github.lupuuss.todo.api.rest.config
+package com.github.lupuuss.todo.api.rest.ktor.config
 
 import com.auth0.jwt.algorithms.Algorithm
 import com.github.lupuuss.todo.api.rest.auth.JwtAuthManager
@@ -11,9 +11,9 @@ import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
 import com.github.lupuuss.todo.api.rest.repository.mongo.MongoUserRepository
 import com.github.lupuuss.todo.api.rest.services.TaskService
 import com.github.lupuuss.todo.api.rest.services.UserService
-import com.github.lupuuss.todo.api.rest.utils.date.CommonDateProvider
-import com.github.lupuuss.todo.api.rest.utils.date.DateProvider
-import com.github.lupuuss.todo.api.rest.utils.ktor.RoleBasedAuthorization
+import com.github.lupuuss.todo.api.rest.date.CommonDateProvider
+import com.github.lupuuss.todo.api.rest.date.DateProvider
+import com.github.lupuuss.todo.api.rest.ktor.RoleBasedAuthorization
 import com.mongodb.client.MongoClient
 import io.ktor.application.*
 import io.ktor.auth.*

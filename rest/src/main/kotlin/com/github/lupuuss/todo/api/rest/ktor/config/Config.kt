@@ -1,4 +1,4 @@
-package com.github.lupuuss.todo.api.rest.config
+package com.github.lupuuss.todo.api.rest.ktor.config
 
 import io.ktor.config.*
 import java.time.Duration

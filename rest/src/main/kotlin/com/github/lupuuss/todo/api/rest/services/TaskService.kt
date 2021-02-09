@@ -10,7 +10,7 @@ import com.github.lupuuss.todo.api.rest.repository.task.TaskData
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
 import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
 import com.github.lupuuss.todo.api.rest.services.exception.ItemNotFoundException
-import com.github.lupuuss.todo.api.rest.utils.date.DateProvider
+import com.github.lupuuss.todo.api.rest.date.DateProvider
 
 class TaskService(
     private val taskRepository: TaskRepository,

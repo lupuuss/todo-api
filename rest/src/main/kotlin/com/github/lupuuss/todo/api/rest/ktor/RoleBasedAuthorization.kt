@@ -1,4 +1,4 @@
-package com.github.lupuuss.todo.api.rest.utils.ktor
+package com.github.lupuuss.todo.api.rest.ktor
 
 import com.github.lupuuss.todo.api.rest.auth.UserPrincipal
 import io.ktor.application.*

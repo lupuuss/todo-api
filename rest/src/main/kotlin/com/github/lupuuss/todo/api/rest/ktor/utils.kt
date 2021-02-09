@@ -1,4 +1,4 @@
-package com.github.lupuuss.todo.api.rest.utils.ktor
+package com.github.lupuuss.todo.api.rest.ktor
 
 import com.github.lupuuss.todo.api.rest.controller.exception.BadParamsException
 import io.ktor.application.*
