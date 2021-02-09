@@ -60,7 +60,7 @@ class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskReposi
 
             val type = it.operationType.toDataChangeType() ?: return@listen
 
-            listener(DataChange(it.documentKey!!["_id"]!!.asString().value, type, it.fullDocument))
+            listener(DataChange(it.documentKey?.get("_id")?.asString()?.value, type, it.fullDocument))
         }
     }
 }

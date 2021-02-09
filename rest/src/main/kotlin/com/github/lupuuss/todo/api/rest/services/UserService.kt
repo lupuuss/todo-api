@@ -1,6 +1,8 @@
 package com.github.lupuuss.todo.api.rest.services
 
 import com.github.lupuuss.todo.api.core.Page
+import com.github.lupuuss.todo.api.core.live.ItemChange
+import com.github.lupuuss.todo.api.core.live.Operation
 import com.github.lupuuss.todo.api.core.user.NewUser
 import com.github.lupuuss.todo.api.core.user.PatchUser
 import com.github.lupuuss.todo.api.core.user.User
@@ -70,6 +72,17 @@ class UserService(
         }
 
         repository.replaceUser(userData)
+    }
+
+    fun addOnUserChangeListener(listener: (ItemChange<User>) -> Unit): AutoCloseable {
+
+        return repository.addOnUserChangeListener {
+            listener(ItemChange(
+                it._id, 
+                Operation.valueOf(it.type.name),
+                it.data?.mapToDomain()
+            ))
+        }
     }
 }
 

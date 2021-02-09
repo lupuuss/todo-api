@@ -1,5 +1,7 @@
 package com.github.lupuuss.todo.api.rest.repository.user
 
+import com.github.lupuuss.todo.api.rest.repository.DataChange
+
 interface UserRepository {
 
     fun findAll(skip: Int? = null, limit: Int? = null): List<UserData>
@@ -19,4 +21,6 @@ interface UserRepository {
     fun deleteUser(id: String): Long
 
     fun userNotExists(id: String): Boolean
+
+    fun addOnUserChangeListener(listener: (DataChange<UserData>) -> Unit): AutoCloseable
 }
