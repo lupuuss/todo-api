@@ -74,7 +74,7 @@ class UserService(
         repository.replaceUser(userData)
     }
 
-    fun addOnUserChangeListener(listener: (ItemChange<User>) -> Unit): AutoCloseable {
+    fun addOnUserChangeListener(listener: suspend (ItemChange<User>) -> Unit): AutoCloseable {
 
         return repository.addOnUserChangeListener {
             listener(ItemChange(

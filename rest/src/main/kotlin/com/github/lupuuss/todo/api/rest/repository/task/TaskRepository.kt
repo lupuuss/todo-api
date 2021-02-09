@@ -21,5 +21,5 @@ interface TaskRepository {
 
     fun deleteTask(id: String): Long
 
-    fun addOnTaskChangeListener(userId: String, listener: (DataChange<TaskData>) -> Unit): AutoCloseable
+    fun addOnTaskChangeListener(userId: String, listener: suspend (DataChange<TaskData>) -> Unit): AutoCloseable
 }

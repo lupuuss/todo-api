@@ -1,6 +1,7 @@
 package com.github.lupuuss.todo.api.rest.repository.user
 
 import com.github.lupuuss.todo.api.rest.repository.DataChange
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 interface UserRepository {
 
@@ -22,5 +23,5 @@ interface UserRepository {
 
     fun userNotExists(id: String): Boolean
 
-    fun addOnUserChangeListener(listener: (DataChange<UserData>) -> Unit): AutoCloseable
+    fun addOnUserChangeListener(listener: suspend (DataChange<UserData>) -> Unit): AutoCloseable
 }

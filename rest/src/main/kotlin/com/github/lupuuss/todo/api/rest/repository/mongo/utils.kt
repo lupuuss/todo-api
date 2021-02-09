@@ -5,12 +5,10 @@ import com.mongodb.client.ChangeStreamIterable
 import com.mongodb.client.FindIterable
 import com.mongodb.client.model.changestream.ChangeStreamDocument
 import com.mongodb.client.model.changestream.OperationType
-import java.util.concurrent.Executors
+import kotlinx.coroutines.*
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import java.util.concurrent.TimeUnit
-import java.util.concurrent.atomic.AtomicBoolean
-import java.util.concurrent.locks.Lock
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 
 fun <T> FindIterable<T>.applyLimitsOptionally(skip: Int?, limit: Int?): FindIterable<T> {
     return this.let { if (skip == null) it else it.skip(skip) }
@@ -18,41 +16,42 @@ fun <T> FindIterable<T>.applyLimitsOptionally(skip: Int?, limit: Int?): FindIter
 }
 
 private class CursorDisposer(
-    val lock: Lock
+    val lock: Mutex,
+    private val asyncJob: Deferred<*>,
+    private val scope: CoroutineScope
 ) : AutoCloseable {
 
-    var isClosed: AtomicBoolean = AtomicBoolean(false)
-
-    override fun close() {
-
-        isClosed.set(true)
+    override fun close() = runBlocking {
+        asyncJob.cancel()
 
         lock.lock()
         lock.unlock()
 
-        println("Listener closed!")
+        scope.cancel()
     }
 }
 
-fun <T> ChangeStreamIterable<T>.listen(listener: (ChangeStreamDocument<T>) -> Unit): AutoCloseable {
-
-    val executor = Executors.newSingleThreadExecutor()
+fun <T> ChangeStreamIterable<T>.listen(listener: suspend (ChangeStreamDocument<T>) -> Unit): AutoCloseable {
 
     val cursor = maxAwaitTime(1000, TimeUnit.MILLISECONDS).iterator()
-    val disposer = CursorDisposer(ReentrantLock())
 
-    executor.submit {
+    val lock = Mutex()
 
-        disposer.lock.withLock {
-            cursor.use {
-                while (!disposer.isClosed.get()) {
-                    it.tryNext()?.let(listener)
+    @Suppress("EXPERIMENTAL_API_USAGE")
+    val newScope = CoroutineScope(newSingleThreadContext("MongoListener"))
+
+    val asyncJob = newScope.async {
+
+        lock.withLock {
+            cursor.use { c ->
+                while (isActive) {
+                    c.tryNext()?.let { listener(it) }
                 }
             }
         }
     }
 
-    return disposer
+    return CursorDisposer(lock, asyncJob, newScope)
 }
 
 fun OperationType.toDataChangeType(): DataChange.Type? = when(this) {

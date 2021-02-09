@@ -4,6 +4,7 @@ import com.github.lupuuss.todo.api.rest.repository.DataChange
 import com.github.lupuuss.todo.api.rest.repository.task.TaskData
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
 import com.mongodb.client.MongoClient
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 
@@ -52,7 +53,7 @@ class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskReposi
 
     override fun deleteTask(id: String): Long = collection.deleteOneById(id).deletedCount
 
-    override fun addOnTaskChangeListener(userId: String, listener: (DataChange<TaskData>) -> Unit): AutoCloseable {
+    override fun addOnTaskChangeListener(userId: String, listener: suspend (DataChange<TaskData>) -> Unit): AutoCloseable {
 
         return collection.watch().listen {
 

@@ -20,6 +20,7 @@ val vSlf4j = "2.0.0-alpha1"
 val vKMongo = "4.2.4"
 
 dependencies {
+
     implementation(project(":core"))
 
     // utils

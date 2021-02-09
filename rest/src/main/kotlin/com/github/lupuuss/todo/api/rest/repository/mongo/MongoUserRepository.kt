@@ -4,6 +4,7 @@ import com.github.lupuuss.todo.api.rest.repository.DataChange
 import com.github.lupuuss.todo.api.rest.repository.user.UserData
 import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
 import com.mongodb.client.MongoClient
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 
@@ -48,7 +49,7 @@ class MongoUserRepository(driver: MongoClient, database: String) : UserRepositor
 
     override fun userNotExists(id: String): Boolean = collection.findOneById(id) == null
 
-    override fun addOnUserChangeListener(listener: (DataChange<UserData>) -> Unit): AutoCloseable {
+    override fun addOnUserChangeListener(listener: suspend (DataChange<UserData>) -> Unit): AutoCloseable {
 
         return collection.watch().listen {
 

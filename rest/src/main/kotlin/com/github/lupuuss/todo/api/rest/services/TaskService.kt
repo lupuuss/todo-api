@@ -85,7 +85,7 @@ class TaskService(
 
     fun deleteTask(id: String): Long = taskRepository.deleteTask(id)
 
-    fun addOnTaskChangedListener(userId: String, listener: (ItemChange<Task>) -> Unit): AutoCloseable {
+    fun addOnTaskChangedListener(userId: String, listener: suspend (ItemChange<Task>) -> Unit): AutoCloseable {
 
         if (userRepository.userNotExists(userId)) throw ItemNotFoundException("User", "id", userId)
 

@@ -79,4 +79,17 @@ class JwtAuthManager(
             ?.let { validatePrincipal(it) }
                 as? UserPrincipal
     }
+
+    fun expiresInMs(token: String): Long {
+        val decoded = try {
+            verifier.verify(token)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return 0
+        }
+
+        val expiresAt = decoded.expiresAt.toInstant()
+
+        return Duration.between(Instant.now(), expiresAt).toMillis()
+    }
 }
