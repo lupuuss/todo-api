@@ -1,8 +1,7 @@
-package com.github.lupuuss.todo.api.rest.repository.user.mongo
+package com.github.lupuuss.todo.api.rest.repository.mongo
 
 import com.github.lupuuss.todo.api.rest.repository.user.UserData
 import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
-import com.github.lupuuss.todo.api.rest.utils.mongo.applyLimitsOptionally
 import com.mongodb.client.MongoClient
 import org.bson.types.ObjectId
 import org.litote.kmongo.*

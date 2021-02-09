@@ -59,6 +59,5 @@ class LiveController(application: Application) : AbstractDIController(applicatio
         return (incoming.receive() as? Frame.Text)
             ?.readText()
             ?.let { authManager.verifyJwt(it) }
-            ?.takeIf { it.isInRole(User.Role.USER) }
     }
 }

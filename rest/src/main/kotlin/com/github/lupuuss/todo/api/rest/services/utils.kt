@@ -1,4 +1,4 @@
-package com.github.lupuuss.todo.api.rest.utils.mapping
+package com.github.lupuuss.todo.api.rest.services
 
 import com.github.lupuuss.todo.api.core.task.Task
 import com.github.lupuuss.todo.api.core.user.User

@@ -1,5 +1,7 @@
 package com.github.lupuuss.todo.api.rest.repository.task
 
+import com.github.lupuuss.todo.api.rest.repository.DataChange
+
 interface TaskRepository {
 
     fun findTaskById(id: String): TaskData?
@@ -19,5 +21,5 @@ interface TaskRepository {
 
     fun deleteTask(id: String): Long
 
-    fun addOnTaskChangeListener(userId: String, listener: (TaskDataChange) -> Unit): AutoCloseable
+    fun addOnTaskChangeListener(userId: String, listener: (DataChange<TaskData>) -> Unit): AutoCloseable
 }

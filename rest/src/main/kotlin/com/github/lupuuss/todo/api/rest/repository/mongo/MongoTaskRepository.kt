@@ -1,11 +1,9 @@
-package com.github.lupuuss.todo.api.rest.repository.task.mongo
+package com.github.lupuuss.todo.api.rest.repository.mongo
 
+import com.github.lupuuss.todo.api.rest.repository.DataChange
 import com.github.lupuuss.todo.api.rest.repository.task.TaskData
-import com.github.lupuuss.todo.api.rest.repository.task.TaskDataChange
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
-import com.github.lupuuss.todo.api.rest.utils.mongo.*
 import com.mongodb.client.MongoClient
-import com.mongodb.client.model.changestream.OperationType
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
 
@@ -54,21 +52,15 @@ class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskReposi
 
     override fun deleteTask(id: String): Long = collection.deleteOneById(id).deletedCount
 
-    override fun addOnTaskChangeListener(userId: String, listener: (TaskDataChange) -> Unit): AutoCloseable {
+    override fun addOnTaskChangeListener(userId: String, listener: (DataChange<TaskData>) -> Unit): AutoCloseable {
 
         return collection.watch().listen {
 
-            if (userId == it.fullDocument?.userId) return@listen
+            if (userId != it.fullDocument?.userId) return@listen
 
-            val type = when (it.operationType) {
-                OperationType.INSERT -> TaskDataChange.Type.INSERT
-                OperationType.UPDATE -> TaskDataChange.Type.UPDATE
-                OperationType.REPLACE -> TaskDataChange.Type.UPDATE
-                OperationType.DELETE -> TaskDataChange.Type.DELETE
-                else -> throw IllegalStateException("Other types should be filtered before!")
-            }
+            val type = it.operationType.toDataChangeType() ?: return@listen
 
-            listener(TaskDataChange(it.documentKey!!["_id"]!!.asString().value, type, it.fullDocument))
+            listener(DataChange(it.documentKey!!["_id"]!!.asString().value, type, it.fullDocument))
         }
     }
 }

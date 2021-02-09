@@ -4,7 +4,7 @@ import com.github.lupuuss.todo.api.core.user.Credentials
 import com.github.lupuuss.todo.api.core.user.User
 import com.github.lupuuss.todo.api.rest.auth.hash.HashProvider
 import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
-import com.github.lupuuss.todo.api.rest.utils.mapping.mapToDomain
+import com.github.lupuuss.todo.api.rest.services.mapToDomain
 import io.ktor.auth.*
 
 open class AuthManager(

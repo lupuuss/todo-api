@@ -9,10 +9,7 @@ import com.github.lupuuss.todo.api.rest.repository.user.UserData
 import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
 import com.github.lupuuss.todo.api.rest.services.exception.ItemAlreadyExistsException
 import com.github.lupuuss.todo.api.rest.services.exception.ItemNotFoundException
-import com.github.lupuuss.todo.api.rest.utils.mapping.mapToDomain
-import javax.sound.midi.Patch
 import kotlin.reflect.KMutableProperty1
-import kotlin.reflect.KProperty1
 
 class UserService(
     private val repository: UserRepository,

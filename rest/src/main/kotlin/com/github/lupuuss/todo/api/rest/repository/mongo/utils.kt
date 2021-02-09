@@ -1,4 +1,4 @@
-package com.github.lupuuss.todo.api.rest.utils.mongo
+package com.github.lupuuss.todo.api.rest.repository.mongo
 
 import com.mongodb.client.ChangeStreamIterable
 import com.mongodb.client.FindIterable

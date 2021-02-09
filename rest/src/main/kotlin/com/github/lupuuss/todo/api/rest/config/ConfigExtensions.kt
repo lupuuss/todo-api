@@ -1,15 +1,14 @@
 package com.github.lupuuss.todo.api.rest.config
 
 import com.auth0.jwt.algorithms.Algorithm
-import com.github.lupuuss.todo.api.core.user.User
 import com.github.lupuuss.todo.api.rest.auth.JwtAuthManager
 import com.github.lupuuss.todo.api.rest.auth.UserPrincipal
 import com.github.lupuuss.todo.api.rest.auth.hash.BCryptHashProvider
 import com.github.lupuuss.todo.api.rest.auth.hash.HashProvider
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
-import com.github.lupuuss.todo.api.rest.repository.task.mongo.MongoTaskRepository
+import com.github.lupuuss.todo.api.rest.repository.mongo.MongoTaskRepository
 import com.github.lupuuss.todo.api.rest.repository.user.UserRepository
-import com.github.lupuuss.todo.api.rest.repository.user.mongo.MongoUserRepository
+import com.github.lupuuss.todo.api.rest.repository.mongo.MongoUserRepository
 import com.github.lupuuss.todo.api.rest.services.TaskService
 import com.github.lupuuss.todo.api.rest.services.UserService
 import com.github.lupuuss.todo.api.rest.utils.date.CommonDateProvider

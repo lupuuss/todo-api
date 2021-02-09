@@ -66,6 +66,6 @@ fun Application.main() {
             controller("/admin") { AdminController(instance()) }
         }
 
-        controller("/me/live") { LiveController(instance()) }
+        controller("/live") { LiveController(instance()) }
     }
 }
