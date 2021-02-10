@@ -1,6 +1,5 @@
 package com.github.lupuuss.todo.api.rest.controller.live
 
-import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -11,6 +10,10 @@ class OutgoingQueue<T> {
     private val mutex = Mutex()
     private val queue = LinkedList<T>()
     private var paused = false
+
+    init {
+        println("new queue")
+    }
 
     fun pause() = synchronized(mutex) {
         paused = true

@@ -28,11 +28,11 @@ class LiveController(application: Application) : AbstractDIController(applicatio
     private val userService: UserService by instance()
     private val authManager: JwtAuthManager by instance()
 
-    private val outgoingQueue = OutgoingQueue<Frame>()
-
     override fun Route.getRoutes() {
 
         webSocket {
+
+            val outgoingQueue = OutgoingQueue<Frame>()
 
             logInfo("Connection received!")
 
@@ -44,15 +44,15 @@ class LiveController(application: Application) : AbstractDIController(applicatio
                 logInfo("User '${principal.login}' is listening!")
 
                 taskService.addOnTaskChangedListener(principal.id) {
-                    outgoing.safeSendText(Commands.taskIncoming)
-                    outgoing.safeSendText(it.json)
+                    outgoing.safeSendText(outgoingQueue, Commands.taskIncoming)
+                    outgoing.safeSendText(outgoingQueue, it.json)
                 }.use()
 
                 if (principal.isInRole(User.Role.ADMIN)) {
 
                     userService.addOnUserChangeListener {
-                        outgoing.safeSendText(Commands.userIncoming)
-                        outgoing.safeSendText(it.json)
+                        outgoing.safeSendText(outgoingQueue, Commands.userIncoming)
+                        outgoing.safeSendText(outgoingQueue, it.json)
                     }.use()
                 }
 
@@ -93,7 +93,7 @@ class LiveController(application: Application) : AbstractDIController(applicatio
     /**
      * Sends text frames using [outgoingQueue].
      */
-    private suspend fun SendChannel<Frame>.safeSendText(text: String) {
+    private suspend fun SendChannel<Frame>.safeSendText(outgoingQueue: OutgoingQueue<Frame>, text: String) {
         if (isClosedForSend) return
 
         outgoingQueue.send(this, Frame.Text(text))
