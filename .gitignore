@@ -77,3 +77,4 @@ fabric.properties
 /rest/build/
 /core/build/
 /rest/src/main/resources/application.conf
+/core/gradle.properties

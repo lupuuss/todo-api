@@ -4,13 +4,20 @@ plugins {
 }
 
 group = "com.github.lupuuss.todo"
-version = "1.0-SNAPSHOT"
+version = "1.0.0"
+
+val publishPassword: String by project
+val publishUrlWrite: String by project
 
 publishing {
 
     repositories {
         maven {
-            url = uri("https://mymavenrepo.com/repo/BjwNRjndUUDYeEf55vUU/")
+            url = uri(publishUrlWrite)
+            credentials {
+                username = "myMavenRepo"
+                password = publishPassword
+            }
         }
     }
 }
@@ -23,19 +30,11 @@ kotlin {
         browser()
     }
 
-    val publicationsFromMainHost =
-        listOf(jvm(), js()).map { it.name } + "kotlinMultiplatform"
     publishing {
 
         publications {
             create<MavenPublication>("todo-api-core") {
-            }
-
-            matching { it.name in publicationsFromMainHost }.all {
-                val targetPublication = this@all
-                tasks.withType<AbstractPublishToMaven>()
-                    .matching { it.publication == targetPublication }
-                    .configureEach { onlyIf { findProperty("isMainHost") == "true" } }
+                pom.packaging = "jar"
             }
         }
     }
