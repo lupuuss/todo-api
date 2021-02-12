@@ -11,6 +11,7 @@ data class Task(
     val description: String?,
     val status: Status = Status.NOT_STARTED,
 ) {
+    @Serializable
     enum class Status {
         NOT_STARTED, IN_PROGRESS, DONE
     }

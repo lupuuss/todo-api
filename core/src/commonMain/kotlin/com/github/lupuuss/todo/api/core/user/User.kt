@@ -10,6 +10,7 @@ data class User(
     val active: Boolean,
     val role: Role,
 ) {
+    @Serializable
     enum class Role {
         USER, ADMIN
     }

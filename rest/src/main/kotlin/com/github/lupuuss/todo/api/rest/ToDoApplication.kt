@@ -26,33 +26,41 @@ import org.kodein.di.ktor.controller.controller
 import org.slf4j.event.Level
 
 fun Application.main() {
+
+    install(CallLogging) {
+        level = Level.INFO
+    }
+
+    install(CORS) {
+        header("Authorization")
+        anyHost()
+    }
+
+
+    install(ContentNegotiation) { json() }
+    install(WebSockets)
+
+    Config.init(environment.config)
+
+    configKodein()
+    configAuth()
+
+    install(StatusPages) {
+
+        exception<ItemAlreadyExistsException> { cause ->
+            call.respond(HttpStatusCode.Conflict, Message(cause.message ?: ""))
+        }
+
+        exception<ItemNotFoundException> { cause ->
+            call.respond(HttpStatusCode.NotFound, Message(cause.message ?: ""))
+        }
+
+        exception<BadParamsException> { cause ->
+            call.respond(HttpStatusCode.BadRequest, Message(cause.message ?: ""))
+        }
+    }
+
     routing {
-
-        install(CallLogging) {
-            level = Level.INFO
-        }
-        install(ContentNegotiation) { json() }
-        install(WebSockets)
-
-        Config.init(environment.config)
-
-        configKodein()
-        configAuth()
-
-        install(StatusPages) {
-
-            exception<ItemAlreadyExistsException> { cause ->
-                call.respond(HttpStatusCode.Conflict, Message(cause.message ?: ""))
-            }
-
-            exception<ItemNotFoundException> { cause ->
-                call.respond(HttpStatusCode.NotFound, Message(cause.message ?: ""))
-            }
-
-            exception<BadParamsException> { cause ->
-                call.respond(HttpStatusCode.BadRequest, Message(cause.message ?: ""))
-            }
-        }
 
         get("/") { call.respond("TO-DO List API!") }
 

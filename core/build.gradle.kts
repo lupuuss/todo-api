@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "com.github.lupuuss.todo"
-version = "1.0.1"
+version = "1.0.2"
 
 val publishPassword: String by project
 val publishUrlWrite: String by project
