@@ -1,6 +1,5 @@
 package com.github.lupuuss.todo.api.core.task
 
-import kotlin.reflect.KMutableProperty1
 import kotlin.reflect.KProperty1
 
 class PatchTask(initMap: Map<String, String?>? = null) {

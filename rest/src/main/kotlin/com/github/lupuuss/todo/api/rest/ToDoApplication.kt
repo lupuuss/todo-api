@@ -16,10 +16,10 @@ import com.github.lupuuss.todo.api.rest.ktor.authenticateWithRole
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.features.*
-import io.ktor.gson.*
 import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
+import io.ktor.serialization.*
 import io.ktor.websocket.*
 import org.kodein.di.instance
 import org.kodein.di.ktor.controller.controller
@@ -31,7 +31,7 @@ fun Application.main() {
         install(CallLogging) {
             level = Level.INFO
         }
-        install(ContentNegotiation) { gson() }
+        install(ContentNegotiation) { json() }
         install(WebSockets)
 
         Config.init(environment.config)

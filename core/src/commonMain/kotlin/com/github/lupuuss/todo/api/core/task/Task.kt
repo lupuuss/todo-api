@@ -1,5 +1,8 @@
 package com.github.lupuuss.todo.api.core.task
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Task(
     val id: String,
     val timestamp: Long,

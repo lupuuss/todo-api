@@ -1,11 +1,11 @@
 package com.github.lupuuss.todo.api.core
 
-class Page<T>(
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class Page<T>(
     val elements: List<T>,
     val pageNumber: Int,
     val pageSize: Int,
-    isLast: Boolean
-    ) {
-
-    val nextPage: Int? = if (isLast) null else pageNumber + 1
-}
+    val nextPage: Int?
+)
