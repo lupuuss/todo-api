@@ -48,7 +48,7 @@ class RoleBasedAuthorization(configure: Configuration<*>) {
 
                 logWarn("No permission for '${principal.login}'! Expected one of roles: $roles! Actual: $principalRole")
 
-                call.respond(HttpStatusCode.Unauthorized)
+                call.respond(HttpStatusCode.Forbidden)
                 return@intercept finish()
             }
         }
