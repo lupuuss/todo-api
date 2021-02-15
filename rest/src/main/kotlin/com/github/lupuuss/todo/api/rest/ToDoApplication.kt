@@ -32,7 +32,7 @@ fun Application.main() {
     }
 
     install(CORS) {
-        header("Authorization")
+        allowNonSimpleContentTypes = true
         anyHost()
     }
 
