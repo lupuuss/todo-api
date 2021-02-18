@@ -17,6 +17,7 @@ class MongoUserRepository(driver: MongoClient, database: String) : UserRepositor
     override fun findAll(skip: Int?, limit: Int?): List<UserData> {
         return collection
             .find()
+            .sort(ascending(UserData::login))
             .applyLimitsOptionally(skip, limit)
             .toList()
     }
@@ -24,6 +25,7 @@ class MongoUserRepository(driver: MongoClient, database: String) : UserRepositor
     override fun findUserByLoginContains(query: String, skip: Int?, limit: Int?): List<UserData> {
         return collection
             .find(UserData::login regex "$query*")
+            .sort(ascending(UserData::login))
             .applyLimitsOptionally(skip, limit)
             .toList()
     }

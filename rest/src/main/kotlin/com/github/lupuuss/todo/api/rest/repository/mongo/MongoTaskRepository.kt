@@ -33,6 +33,7 @@ class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskReposi
 
         return collection
             .find(and(TaskData::userId eq userId, TaskData::status eq status))
+            .sort(descending(TaskData::timestamp))
             .applyLimitsOptionally(skip, limit)
             .toList()
     }
