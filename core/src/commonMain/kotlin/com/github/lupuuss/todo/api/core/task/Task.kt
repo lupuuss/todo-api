@@ -21,7 +21,7 @@ data class Task(
 
             val nextOrdinal = (ordinal + 1) % enums
 
-            return values().find { ordinal == nextOrdinal }!!
+            return values().find { it.ordinal == nextOrdinal }!!
         }
     }
 }
