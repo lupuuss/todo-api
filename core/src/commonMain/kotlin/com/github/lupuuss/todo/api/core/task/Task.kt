@@ -13,6 +13,15 @@ data class Task(
 ) {
     @Serializable
     enum class Status {
-        NOT_STARTED, IN_PROGRESS, DONE
+
+        NOT_STARTED, IN_PROGRESS, DONE;
+
+        fun next(): Status {
+            val enums = values().size
+
+            val nextOrdinal = (ordinal + 1) % enums
+
+            return values().find { ordinal == nextOrdinal }!!
+        }
     }
 }

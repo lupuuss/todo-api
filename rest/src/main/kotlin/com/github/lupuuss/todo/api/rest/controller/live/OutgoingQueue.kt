@@ -11,10 +11,6 @@ class OutgoingQueue<T> {
     private val queue = LinkedList<T>()
     private var paused = false
 
-    init {
-        println("new queue")
-    }
-
     fun pause() = synchronized(mutex) {
         paused = true
     }

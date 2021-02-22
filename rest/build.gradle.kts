@@ -6,7 +6,7 @@ plugins {
 }
 
 group = "com.github.lupuuss.todo"
-version = "1.0.2"
+version = "1.0.3"
 
 repositories {
     jcenter()
