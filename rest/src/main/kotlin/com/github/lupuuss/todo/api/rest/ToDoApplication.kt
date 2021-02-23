@@ -34,7 +34,10 @@ fun Application.main() {
     install(CORS) {
         allowNonSimpleContentTypes = true
         header("Authorization")
+        method(HttpMethod.Get)
+        method(HttpMethod.Post)
         method(HttpMethod.Patch)
+        method(HttpMethod.Delete)
         anyHost()
     }
 

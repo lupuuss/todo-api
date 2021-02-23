@@ -28,6 +28,7 @@ class AdminController(application: Application) : AbstractDIController(applicati
     }
 
     override fun Route.getRoutes() {
+
         get { call.respond(currentUser()) }
 
         get("user") {
