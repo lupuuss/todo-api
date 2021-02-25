@@ -9,7 +9,7 @@ object Pager {
         val offset = pageNumber * pageSize
         val values = caller(offset, pageSize)
 
-        val isLast = caller(offset + pageSize + 1, 1).isEmpty()
+        val isLast = caller(offset + pageSize, 1).isEmpty()
 
         return Page(values, pageNumber, pageSize, if (isLast) null else pageNumber + 1)
     }
