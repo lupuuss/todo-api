@@ -3,7 +3,9 @@ package com.github.lupuuss.todo.api.rest.repository.mongo
 import com.github.lupuuss.todo.api.rest.repository.DataChange
 import com.github.lupuuss.todo.api.rest.repository.task.TaskData
 import com.github.lupuuss.todo.api.rest.repository.task.TaskRepository
+import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoClient
+import com.mongodb.client.model.changestream.OperationType
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.bson.types.ObjectId
 import org.litote.kmongo.*
@@ -52,17 +54,38 @@ class MongoTaskRepository(driver: MongoClient, databaseName: String): TaskReposi
         return id
     }
 
-    override fun deleteTask(id: String): Long = collection.deleteOneById(id).deletedCount
+    override fun deleteTask(id: String): Long {
+
+        val task = collection.findOneById(id) ?: return 0
+
+        collection.updateOneById(id, BasicDBObject("\$set", BasicDBObject("delete", task.userId)))
+
+        return collection.deleteOneById(id).deletedCount
+    }
 
     override fun addOnTaskChangeListener(userId: String, listener: suspend (DataChange<TaskData>) -> Unit): AutoCloseable {
 
         return collection.watch().listen {
 
-            if (userId != it.fullDocument?.userId) return@listen
+            if (it.operationType == OperationType.DELETE) return@listen
 
-            val type = it.operationType.toDataChangeType() ?: return@listen
+            val deletion = it
+                .updateDescription
+                ?.updatedFields
+                ?.get("delete")
+                ?.asString()
+                ?.value
 
-            listener(DataChange(it.documentKey?.get("_id")?.asString()?.value, type, it.fullDocument))
+            if (userId == it.fullDocument?.userId || userId == deletion) {
+
+                var type = it.operationType.toDataChangeType() ?: return@listen
+
+                if (deletion != null) {
+                    type = DataChange.Type.DELETE
+                }
+
+                listener(DataChange(it.documentKey?.get("_id")?.asString()?.value, type, it.fullDocument))
+            }
         }
     }
 }
