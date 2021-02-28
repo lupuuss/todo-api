@@ -7,8 +7,12 @@ plugins {
 group = "com.github.lupuuss.todo"
 version = "1.0.4"
 
-val publishPassword: String by project
-val publishUrlWrite: String by project
+
+val localPublishPassword: String? by project
+val localPublishUrlWrite: String? by project
+
+val publishPassword: String = requireNotNull(System.getenv("PUBLISH_PASSWORD") ?: localPublishPassword)
+val publishUrlWrite: String = requireNotNull(System.getenv("URL_WRITE") ?: localPublishUrlWrite)
 
 publishing {
 

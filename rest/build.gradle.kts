@@ -57,6 +57,21 @@ tasks.withType<KotlinCompile>() {
     kotlinOptions.jvmTarget = "1.8"
 }
 
+fun JavaExec.envOrProperty(name: String) {
+    val local = properties[name]
+    environment(name, requireNotNull(System.getenv(name) ?: local))
+}
+
+tasks.withType<JavaExec>() {
+    envOrProperty("CONNECT_STR")
+    envOrProperty("DB_NAME")
+    envOrProperty("JWT_SECRET")
+    envOrProperty("TOKEN_REFRESH")
+    envOrProperty("TOKEN_EXPIRE")
+    envOrProperty("PORT")
+}
+
+
 application {
     mainClass.set("com.github.lupuuss.todo.api.rest.ServerKt")
 }
