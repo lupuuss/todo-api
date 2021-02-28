@@ -12,7 +12,7 @@ val localPublishPassword: String? by project
 val localPublishUrlWrite: String? by project
 
 val publishPassword: String = requireNotNull(System.getenv("PUBLISH_PASSWORD") ?: localPublishPassword)
-val publishUrlWrite: String = requireNotNull(System.getenv("URL_WRITE") ?: localPublishUrlWrite)
+val publishUrlWrite: String = requireNotNull(System.getenv("PUBLISH_URL_WRITE") ?: localPublishUrlWrite)
 
 publishing {
 
