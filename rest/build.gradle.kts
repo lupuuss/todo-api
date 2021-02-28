@@ -71,7 +71,21 @@ tasks.withType<JavaExec>() {
     envOrProperty("PORT")
 }
 
+val mainClassKt = "com.github.lupuuss.todo.api.rest.ServerKt"
 
 application {
-    mainClass.set("com.github.lupuuss.todo.api.rest.ServerKt")
+    mainClass.set(mainClassKt)
+}
+
+tasks.withType<Jar> {
+    manifest {
+        attributes["Main-Class"] = mainClassKt
+    }
+
+    from(sourceSets.main.get().output)
+
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath.get().filter { it.name.endsWith("jar") }.map { zipTree(it) }
+    })
 }
